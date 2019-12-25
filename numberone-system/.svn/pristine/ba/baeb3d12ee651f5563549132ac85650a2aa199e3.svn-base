@@ -1,0 +1,26 @@
+package com.numberone.system.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.numberone.system.domain.SysSafetyStock;
+import com.numberone.system.mapper.SysSafetyStockMapper;
+import com.numberone.system.service.ISysSafetyStockService;
+
+@Service
+public class SysSafetyStockServiceImpl implements ISysSafetyStockService{
+	
+	@Autowired
+	private SysSafetyStockMapper safetyStockMapper;
+	/**
+	 * 分頁查詢安全庫存
+	 * @param sfstock_id
+	 * @return
+	 */
+	@Override
+	public List<SysSafetyStock> selectSafetyStockList(SysSafetyStock sfstock_id){
+		return safetyStockMapper.selectSafetyStockList(sfstock_id);
+	}
+}

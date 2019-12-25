@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+	<link th:href="@{/ajax/libs/bootstrap-table/bootstrap-table.min.css}" rel="stylesheet"/>
+	<script th:src="@{/ajax/libs/bootstrap-table/extensions/export/bootstrap-table-export.js}"></script>
+	<script th:src="@{/ajax/libs/bootstrap-table/extensions/export/tableExport.js}"></script>
+	<link th:href="@{/ajax/libs/bootstrap-treetable/bootstrap-treetable.css}" rel="stylesheet"/><meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	
+	<div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="role-form">
+					<div class="select-list">
+					<ul>
+            			<button type="button"  id="btn_download" class="btn btn-warning btn-rounded btn-sm fa fa-download" onClick ="$('#bootstrap-table').tableExport({ type: 'excel', escape: 'false' })">导出</button>
+            		</ul>
+            		</div>			
+				</form>
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+			    <table id="bootstrap-table" class="table table-bordered" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+	<div th:include="include :: footer"></div>
+	<script th:inline="javascript">
+	var prefix = ctx + "mtdata/useReport";
+	var month_demand =["company","material","trade_name","jan_demand_qty","feb_demand_qty","mar_demand_qty","apr_demand_qty","may_demand_qty","jun_demand_qty","jul_demand_qty","aug_demand_qty","sep_demand_qty","oct_demand_qty","nov_demand_qty","dec_demand_qty"];
+	var co=$('#compan').val();
+    
+      $('#bootstrap-table').bootstrapTable({
+    		
+    	 	url: prefix + "/list",    		
+	        sortName: "company",	       
+	        method:'post',
+	        striped: true,
+	        modalName: "領用匯總報表",
+	        pagination: true, //分页
+            pageNumber:1,                       //初始化加载第一页，默认第一页
+            pageSize: 10,                       //每页的记录行数（*）
+            pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+            search: false, //显示搜索框            
+            sidePagination: "server", //服务端处理分页
+            exports:function(){
+                $('#bootstrap-table').tableExport({type:'excel',escape:false});
+
+
+                      },
+	        onLoadSuccess : function(data) {                                
+	        	var data = $('#bootstrap-table').bootstrapTable('getData', true);
+	        	                   // 合并单元格
+	        	var fieldList=month_demand;
+	            mergeCells(data, "material", 1, $('#bootstrap-table'),fieldList);      
+	        	},
+	        columns: [
+	        [
+ 			{
+    			field: 'company',//必須寫在第一個，不然edit找不到
+   			    title: '公司別',
+    			align: 'center',
+    			valign: 'middle',
+    			width: 100,
+    			height:10,
+    			rowspan: 2,
+    			visable:false,
+    			halign:"center"
+			} , 
+	        {
+	            field: 'material',//必須寫在第一個，不然edit找不到
+	            title: '物料',
+	            align: 'center',
+	            valign: 'middle',
+	            width: 100,
+	            height:10,
+	            rowspan: 2,
+	            halign:"center"        
+	        }  ,
+	        {
+	            field: 'trade_name',//必須寫在第一個，不然edit找不到
+	            title: '品名',
+	            align: 'center',
+	            valign: 'middle',
+	            rowspan: 2,
+	            width: 100,
+	            halign:"center"
+	        },
+	        {
+	            field: 'to_wh_deptid',
+	            title: '領用部門',
+	            align: 'center',
+	            valign: 'middle',
+	            rowspan: 2,
+	            width: 100,
+	            halign:"center"
+	        },
+	        {
+                title: '1月',
+                colspan: 2,
+                align: 'center',
+                width: 100
+            },
+            {
+                title: '2月',
+                colspan: 2,
+                align: 'center',
+                width: 100
+            },
+	        {
+                title: '3月',
+                colspan: 2,
+                align: 'center',
+                width: 100
+            },
+            {
+                title: '4月',
+                colspan: 2,
+                align: 'center',
+                width: 100
+            },
+            {
+                title: '5月',
+                colspan: 2,
+                align: 'center',
+                width: 100
+            },
+	        {
+                title: '6月',
+                colspan: 2,
+                align: 'center',
+                width: 100
+            },
+            {
+                title: '7月',
+                colspan: 2,
+                align: 'center',
+                width: 100
+            },
+	        {
+                title: '8月',
+                colspan: 2,
+                align: 'center',
+                width: 100
+            },
+            {
+                title: '9月',
+                colspan: 2,
+                align: 'center',
+                width: 100
+            },
+            {
+                title: '10月',
+                colspan: 2,
+                align: 'center',
+                width: 100
+            },
+	        {
+                title: '11月',
+                colspan: 2,
+                align: 'center',
+                width: 100
+            },
+            {
+                title: '12月',
+                colspan: 2,
+                align: 'center',
+                width: 100
+            },
+            {
+	            field: 'total_need',
+	            title: 'Total需求',
+	            align: 'center',
+	            height:10,
+	            valign: 'middle',
+	            rowspan: 2,
+	            halign:"center"
+	        },
+	        {
+	            field: 'total_actual',
+	            title: 'Total實際',
+	            rowspan: 2,
+	            height:10,
+	            valign: 'middle',
+	            align: 'center',
+	            halign:"center"
+	        }  
+	         ] ,
+	        [ {
+	            field: 'jan_demand_qty',
+	            title: '需求',
+	            align: 'center',
+	            width: 50
+	        },
+	        {
+	            field: 'jan_actual_qty',
+	            title: '實際',
+	            align: 'center',
+	            width: 50,
+	            cellStyle: function(value, row, index) {
+	            	if(value<row.demand_qty) {
+	            		return {css:{"color":"#FF0033"}}
+	            	}else{
+	            		return {css:{"color":"#4F4F4F"}}
+	            	}
+	            }
+	        }, 
+	        {
+	            field: 'feb_demand_qty',
+	            title: '需求',
+	            align: 'center',
+	            width: 50
+	        },
+	        {
+	            field: 'feb_actual_qty',
+	            title: '實際',
+	            align: 'center',
+	            width: 50,
+	            cellStyle: function(value, row, index) {
+	            	if(value<row.demand_qty) {
+	            		return {css:{"color":"#FF0033"}}
+	            		
+	            	}else{
+	            		return {css:{"color":"#4F4F4F"}}
+	            	}
+	            }
+	        },
+	        {
+	            field: 'mar_demand_qty',
+	            title: '需求',
+	            align: 'center',
+	            width: 50
+	        },
+	        {
+	            field: 'mar_actual_qty',
+	            title: '實際',
+	            align: 'center',
+	            width: 50,
+	            cellStyle: function(value, row, index) {
+	            	if(value<row.demand_qty) {
+	            		return {css:{"color":"#FF0033"}}
+	            	}else{
+	            		return {css:{"color":"#4F4F4F"}}
+	            	}
+	            }
+	        }, 
+	        {
+	            field: 'apr_demand_qty',
+	            title: '需求',
+	            align: 'center',
+	            width: 50
+	        },
+	        {
+	            field: 'apr_actual_qty',
+	            title: '實際',
+	            align: 'center',
+	            width: 50,
+	            cellStyle: function(value, row, index) {
+	            	if(value<row.demand_qty) {
+	            		return {css:{"color":"#FF0033"}}
+	            		
+	            	}else{
+	            		return {css:{"color":"#4F4F4F"}}
+	            	}
+	            }
+	        },
+	        {
+	            field: 'may_demand_qty',
+	            title: '需求',
+	            align: 'center',
+	            width: 50
+	        },
+	        {
+	            field: 'may_actual_qty',
+	            title: '實際',
+	            align: 'center',
+	            width: 50,
+	            cellStyle: function(value, row, index) {
+	            	if(value<row.demand_qty) {
+	            		return {css:{"color":"#FF0033"}}
+	            	}else{
+	            		return {css:{"color":"#4F4F4F"}}
+	            	}
+	            }
+	        }, 
+	        {
+	            field: 'jun_demand_qty',
+	            title: '需求',
+	            align: 'center',
+	            width: 50
+	        },
+	        {
+	            field: 'jun_actual_qty',
+	            title: '實際',
+	            align: 'center',
+	            width: 50,
+	            cellStyle: function(value, row, index) {
+	            	if(value<row.demand_qty) {
+	            		return {css:{"color":"#FF0033"}}
+	            		
+	            	}else{
+	            		return {css:{"color":"#4F4F4F"}}
+	            	}
+	            }
+	        },
+	        {
+	            field: 'jul_demand_qty',
+	            title: '需求',
+	            align: 'center',
+	            width: 50
+	        },
+	        {
+	            field: 'jul_actual_qty',
+	            title: '實際',
+	            align: 'center',
+	            width: 50,
+	            cellStyle: function(value, row, index) {
+	            	if(value<row.demand_qty) {
+	            		return {css:{"color":"#FF0033"}}
+	            		
+	            	}else{
+	            		return {css:{"color":"#4F4F4F"}}
+	            	}
+	            }
+	        },
+	        {
+	            field: 'aug_demand_qty',
+	            title: '需求',
+	            align: 'center',
+	            width: 40
+	        },
+	        {
+	            field: 'aug_actual_qty',
+	            title: '實際',
+	            align: 'center',
+	            width: 40,
+	            cellStyle: function(value, row, index) {
+	            	if(value<row.demand_qty) {
+	            		return {css:{"color":"#FF0033"}}
+	            		
+	            	}else{
+	            		return {css:{"color":"#4F4F4F"}}
+	            	}
+	            }
+	        },
+	        {
+	            field: 'sep_demand_qty',
+	            title: '需求',
+	            align: 'center',
+	            width: 40
+	        },
+	        {
+	            field: 'sep_actual_qty',
+	            title: '實際',
+	            align: 'center',
+	            width: 40,
+	            cellStyle: function(value, row, index) {
+	            	if(value<row.demand_qty) {
+	            		return {css:{"color":"#FF0033"}}
+	            		
+	            	}else{
+	            		return {css:{"color":"#4F4F4F"}}
+	            	}
+	            }
+	        },
+	        {
+	            field: 'oct_demand_qty',
+	            title: '需求',
+	            align: 'center',
+	            width: 40
+	        },
+	        {
+	            field: 'oct_actual_qty',
+	            title: '實際',
+	            align: 'center',
+	            width: 40,
+	            cellStyle: function(value, row, index) {
+	            	if(value<row.demand_qty) {
+	            		return {css:{"color":"#FF0033"}}
+	            		
+	            	}else{
+	            		return {css:{"color":"#4F4F4F"}}
+	            	}
+	            }
+	        },
+	        {
+	            field: 'nov_demand_qty',
+	            title: '需求',
+	            align: 'center',
+	            width: 40
+	        },
+	        {
+	            field: 'nov_actual_qty',
+	            title: '實際',
+	            align: 'center',
+	            width: 40,
+	            cellStyle: function(value, row, index) {
+	            	if(value<row.demand_qty) {
+	            		return {css:{"color":"#FF0033"}}
+	            		
+	            	}else{
+	            		return {css:{"color":"#4F4F4F"}}
+	            	}
+	            }
+	        },
+	        {
+	            field: 'dec_demand_qty',
+	            title: '需求',
+	            align: 'center',
+	            width: 40
+	        },
+	        {
+	            field: 'dec_actual_qty',
+	            title: '實際',
+	            align: 'center',
+	            width: 40,
+	            cellStyle: function(value, row, index) {
+	            	if(value<row.demand_qty) {
+	            		return {css:{"color":"#FF0033"}}
+	            		
+	            	}else{
+	            		return {css:{"color":"#4F4F4F"}}
+	            	}
+	            }
+	        }        
+	        ] 
+	        ]
+	    }); 
+    	 
+    function mergeCells(data,fieldName,colspan,target,fieldList){	
+    	// 声明一个map计算相同属性值在data对象出现的次数和
+    	var sortMap = {};
+    	for(var i = 0 ; i < data.length ; i++){
+    	    for(var prop in data[i]){
+    	    	//例如people.unit.name
+    	    	var fieldArr=fieldName.split(".");		        
+    	    	getCount(data[i],prop,fieldArr,0,sortMap);
+    	    }
+    	}	  
+    	var index = 0;    
+    	for(var prop in sortMap){
+    	    var count = sortMap[prop];
+    	    for(var i = 0 ; i < fieldList.length ; i++){
+    	    	$(target).bootstrapTable('mergeCells',{index:index, field:fieldList[i], colspan: colspan, rowspan: count});   
+    		        }
+    		        index += count;        
+    		    }
+    	}
+    function getCount(data,prop,fieldArr,index,sortMap){	
+    	if(index == fieldArr.length-1){			
+    		if(prop == fieldArr[index]){
+                var key = data[prop];            
+                if(sortMap.hasOwnProperty(key)){
+                    sortMap[key] = sortMap[key]+ 1;
+                } else {
+                    sortMap[key] = 1;
+                } 
+    	    }        
+    		return;
+    	}		
+        if(prop == fieldArr[index]){
+            var sdata = data[prop];	   
+            index=index+1;
+            getCount(sdata,fieldArr[index],fieldArr,index,sortMap);
+        } 
+        
+    }
+
+    
+     function bb(){
+    	var table = $('#bootstrap-table').bootstrapTable();  
+    	table.customSearch($('aa').val(),true,false).draw();//对第二列进行模糊非智能搜索
+    } 
+     
+
+	
+	</script>
+</body>
+</html>

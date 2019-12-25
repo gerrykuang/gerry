@@ -1,0 +1,8 @@
+com\numberone\generator\domain\ColumnConfigInfo.class
+com\numberone\generator\service\IGenService.class
+com\numberone\generator\domain\TableInfo.class
+com\numberone\generator\util\VelocityInitializer.class
+com\numberone\generator\service\impl\GenServiceImpl.class
+com\numberone\generator\domain\ColumnInfo.class
+com\numberone\generator\mapper\GenMapper.class
+com\numberone\generator\util\GenUtils.class

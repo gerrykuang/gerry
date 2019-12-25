@@ -1,0 +1,23 @@
+package com.numberone.system.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.numberone.system.domain.SysMaintenance;
+import com.numberone.system.mapper.SysMaintenanceMapper;
+import com.numberone.system.service.ISysMaintenanceService;
+
+public class SysMaintenanceServiceImpl implements ISysMaintenanceService{
+	@Autowired
+    private SysMaintenanceMapper maintenanceMapper;
+	
+    /**
+     * 分页查询系統管理員
+     */
+    @Override
+    public List<SysMaintenance> selectMaintenanceList(SysMaintenance employeeid)
+    {
+    	return maintenanceMapper.selectMaintenanceList(employeeid);
+    }
+}

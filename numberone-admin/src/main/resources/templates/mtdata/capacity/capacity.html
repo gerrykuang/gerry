@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	
+	<div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="role-form">
+					<div class="select-list">
+						<ul>
+							<li>
+								公司別：<select name="company" th:with="type=${@dict.getType('fcms_company')}">
+	                    			<option value="">所有</option>
+	                    			<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+	                				</select>
+							</li>
+							<li class="select-time">
+									<label>年月：</label>
+									<span ><i class="fa fa-calendar"></i></span>
+				   					<input type="text" id='selectYearMoth' class="form-control" readonly="readonly" value="">	
+									<input type="hidden" class="form-control" readonly="readonly" name="income_year" id="income_year" />
+									<input type="hidden" class="form-control" readonly="readonly" name="income_month" id="income_month" />
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							    <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			<!-- 增刪改料號 -->
+			<div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+	        	<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="mtdata:capacity:add">
+	                <i class="fa fa-plus"></i> 新增
+	            </a>
+	           
+	            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="mtdata:capacity:export">
+		            <i class="fa fa-download"></i> 導出
+		        </a>
+	        </div>
+	        
+			<div class="col-sm-12 select-table table-striped">
+			    <table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+	<div th:include="include :: footer"></div>
+	<script th:inline="javascript">
+	var prefix = ctx + "mtdata/capacity";
+	
+	$(function() {
+	    var options = {
+	        url: prefix + "/list",
+	        createUrl: prefix + "/add",
+	        exportUrl: prefix + "/export",
+	        sortName: "createTime",
+	        sortOrder: "desc",
+	        modalName: "產能數據",
+	        search: false,
+	        showExport: false,
+	        columns: [{
+	            checkbox: true
+	        },
+	        {
+	            field: 'company',//必須寫在第一個，不然edit找不到
+	            title: '公司別',
+	            sortable: true,
+	            align: 'left'
+	        },
+	        {
+	            field: 'income_year',//必須寫在第一個，不然edit找不到
+	            title: '年份',
+	            sortable: true,
+	            align: 'left'
+	        },
+	        {
+	            field: 'income_month',//必須寫在第一個，不然edit找不到
+	            title: '月份',
+	            align: 'left'
+	        },
+	        {
+	            field: 'income_qty',//必須寫在第一個，不然edit找不到
+	            title: '產量',
+	            align: 'left'
+	        },
+	        {
+	            field: 'remark',
+	            title: '備註',
+	            align: 'left'
+	        },
+	        {
+	            field: 'createTime',
+	            title: '創建時間',
+	            sortable: true,
+	            align: 'center'
+	        },
+	        {
+	            field: 'createBy',
+	            title: '創建人',
+	            align: 'center'
+	        }
+	      ]
+	    };
+	    $.table.init(options);
+	});
+    //月份陣列
+    var mothsEn = new Array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'
+                   ,'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
+    
+    //layui的日期選擇外掛程式,年月選擇器
+	layui.use('laydate', function() {
+		var laydate = layui.laydate;
+		var initYear;
+		laydate.render({
+			elem : '#selectYearMoth',
+			type : 'month',
+			trigger: 'click',
+			position: 'abolute',
+			lang : 'cn',
+			/* ready和change函数是为了实现选择年月时不用点确定直接关闭  */
+				ready : function(date) { // 控件在打开时触发，回调返回一个参数：初始的日期时间对象
+				initYear = date.year;
+			},
+			change : function(value, date, endDate) { // 年月日时间被切换时都会触发。回调返回三个参数，分别代表：生成的值、日期时间对象、结束的日期时间对象
+				var selectYear = date.year;
+			 	var differ = selectYear - initYear;
+				if (differ == 0) {
+					if ($(".layui-laydate").length) {
+						$("#selectYearMoth").val(value);
+						$(".layui-laydate").remove();
+					}
+				}
+				/* initYear = selectYear; */
+				$('#income_year').val(date.year);
+				$('#income_month').val(mothsEn[date.month-1]);
+				console.log( $('#income_year').val()+" "+ $('#income_month').val());
+			}
+		});
+	}); 
+    	
+	</script>
+</body>
+</html>

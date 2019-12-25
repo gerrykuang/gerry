@@ -1,0 +1,10 @@
+package com.numberone.system.service;
+
+import java.util.List;
+
+import com.numberone.system.domain.SysException;
+
+public interface ISysExceptionService {
+	
+	public List<SysException> selectExceptionList(SysException exception);
+}

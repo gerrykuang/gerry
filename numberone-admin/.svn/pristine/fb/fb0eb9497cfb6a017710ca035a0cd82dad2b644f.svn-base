@@ -1,0 +1,25 @@
+package com.numberone.web.controller.mtdata;
+
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.numberone.framework.web.base.BaseController;
+/**
+ * 化學品領用
+ * @author Q18020504
+ *
+ */
+@Controller
+@RequestMapping("/mtdata/emsLink")
+public class EmsLinkController extends BaseController{
+	private String prefix = "mtdata/emsLink";
+	@RequiresPermissions("mtdata:emsLink:view")
+	@GetMapping()
+	public String emsLink()
+	{
+		return prefix + "/emsLink";
+	}
+
+}

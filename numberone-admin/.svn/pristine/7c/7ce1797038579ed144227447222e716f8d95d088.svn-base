@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form-exception-add">
+		    <div class="form-group">
+				<label class="col-sm-3 control-label ">公司代碼：</label>
+				<div class="col-sm-8">
+					<!-- <input class="form-control" type="text" name="company" id="company"/> -->
+					<select id="company" name="company" class="form-control m-b" th:with="type=${@dict.getType('fcms_company')}">
+	                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+	                </select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">物料號碼：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="material" id="material" />
+					<div>
+					  <div></div>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">物料品名：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="trade_name" id="trade_name"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">數量：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="qty" id="qty"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">異常原因：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="exception_case" id="handle_case"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">發生時間：</label>
+				<div class="col-sm-8">
+					<!-- <input class="form-control" type="text" name="exception_time" id="exception_time" value="2019/6/20"/> -->
+					<input type="text" class="form-control time-input" name="exception_time" id="exception_time" placeholder="异常时间" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">處理者：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="handle_by" id="handle_by"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">處理方式：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="handle_action" id="handle_action"/>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div th:include="include::footer"></div>
+	<script type="text/javascript">
+		console.log("add");
+		var prefix = ctx + "mtdata/exception";		
+		
+		$("#form-material-add").validate({
+			rules:{
+				material:{
+					required:true,
+					remote: {
+		                url: ctx + "mtdata/material/checkMaterialUnique",
+		                type: "post",
+		                dataType: "json",
+		                data: {
+		                	"material" : function() {
+		                		return $.common.trim($("#material").val());
+		                    }
+		                },
+		                dataFilter: function(data, type) {
+		                	return $.validate.unique(data);
+		                }
+		            }
+				},
+			},
+			messages: {
+		        "material": {
+		            remote: "物料已经存在"
+		        }
+		    }
+		}); 
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	        	$.operate.save(prefix + "/add", $('#form-exception-add').serialize());
+	        }
+	    }
+		
+		/** 聲明material相關參數*/
+		var materialConfig = {
+			el: "#material",
+			data: [],
+			size: 10,
+			showContainer: null,
+			containerStyle: "background:#c4c5d0;",
+			divStyle: "padding:4px;font-size:18px;background:whitesmoke;color:grey",
+			divHoverStyle: "padding:4px;color:blue;background:#cdd8e2;font-size:20px;cursor:pointer;color:#ff5722;",
+			beforeExcuted: false,
+			beforeShow: function(text, callback){
+				//先清掉所有数据
+				materialConfig.data = [];
+				callback(materialConfig);
+				
+				//ajax请求获取material
+				$.ajax({
+					type: "POST",
+					url: "/mtdata/material/list",
+					dataType: "json",
+					data: { material: text },
+					async: true, //同步请求
+					success: function(result){
+						//重新设置数据
+						var rows = result.rows;
+						for(var i in rows){
+							//第一个span是物料料号，第二个是trade_name
+							materialConfig.data[i] = "<span>"+rows[i].material+"</span> - <span>"+rows[i].trade_name+"</span>";
+						}
+						//刷新显示的数据
+						callback(materialConfig);
+					}
+				});
+			},
+			clickHandler: function(el){
+				   //第一个span是物料料号，第二个span是trade_name
+				   var children = el.children;
+				   $("#material").val(children[0].innerHTML);
+				   $("#trade_name").val(children[1].innerHTML)
+				   return true;
+			    }
+		}
+		/**啟動自動監聽*/
+		simpleSmartTip(materialConfig);
+		
+	</script>
+</body>
+</html>

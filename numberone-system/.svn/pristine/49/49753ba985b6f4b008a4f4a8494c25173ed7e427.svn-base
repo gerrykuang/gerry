@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberone.system.mapper.SysMaintenanceMapper">
+
+	<resultMap type="SysMaintenance" id="SysMaintenanceResult">
+		<id     property="employeeid"   column="employeeid" />
+		<result property="user_name" column="user_name"  			/>
+		<result property="phonenumber" column="phonenumber"  	/>
+		<result property="email"     column="email"   	/>
+		<result property="create_by"     column="create_by"/>
+		<result property="create_time" column="create_time" />
+		<result property="updateBy"     column="update_by"   	/>
+		<result property="updateTime"   column="update_time" 	/>
+	</resultMap>
+	<sql id="selectMaintenanceVo">
+		SELECT a.employeeid,a.user_name,a.phonenumber,a.email,a.create_time,a.create_by
+        FROM fcms_admin a
+	</sql>
+	<select id="selectMaintenanceList" parameterType="SysMaintenance" resultType="SysMaintenance">
+		<include refid="selectMaintenanceVo"/>
+		where 1=1
+		<if test="employeeid != null and employeeid != ''">
+			and a.employeeid like ('%'||#{employeeid}||'%')
+		</if>
+	</select>
+	<select id="selectMaintenance"  parameterType="SysMaintenance" resultMap="SysMaintenanceResult">
+		<include refid="selectMaintenanceVo"/>
+	</select>
+    <select id="selectMaintenanceId"  parameterType="String" resultMap="SysMaintenanceResult">
+		<include refid="selectMaintenanceVo"/>
+			where  a.employeeid = #{employeeid}
+	</select>
+	
+</mapper> 

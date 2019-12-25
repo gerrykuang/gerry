@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberone.system.mapper.SysMaintenanceMapper">
+
+	<resultMap type="SysMaintenance" id="SysMaintenanceResult">
+		<id     property="employeeid"   column="employeeid" />
+		<result property="company" column="company"/>
+		<result property="user_name" column="user_name" />
+		<result property="phonenumber" column="phonenumber" />
+		<result property="email"     column="email"   	/>
+		<result property="createBy"     column="create_by"/>
+		<result property="createTime" column="create_time" />
+		<result property="updateBy"     column="update_by"   	/>
+		<result property="updateTime"   column="update_time" 	/>
+	</resultMap>
+	<sql id="selectMaintenanceVo">
+		SELECT a.employeeid,a.company,a.user_name,a.phonenumber,a.email,a.create_time,a.create_by
+        FROM fcms_contact a
+	</sql>
+	<select id="selectMaintenanceList" parameterType="SysMaintenance" resultMap="SysMaintenanceResult">
+		<include refid="selectMaintenanceVo"/>
+		where 1=1
+		<if test="employeeid != null and employeeid != ''">
+			and a.employeeid like ('%'||#{employeeid}||'%')
+		</if>
+	</select>
+    <select id="selectMaintenanceId"  parameterType="String" resultMap="SysMaintenanceResult">
+		<include refid="selectMaintenanceVo"/>
+			where  a.employeeid = #{employeeid}
+	</select>
+	<insert id="insertMaintenance" parameterType="SysMaintenance" >
+		insert into fcms_contact(
+			<if test="company != null and company != ''">company,</if>
+ 			<if test="employeeid != null and employeeid != ''">employeeid,</if>
+ 			<if test="user_name != null and user_name != ''">user_name,</if>
+ 			<if test="phonenumber != null and phonenumber != ''">phonenumber,</if>	
+ 			<if test="email != null and email != ''">email,</if>
+ 			<if test="createBy != null and createBy != ''">create_by,</if>
+ 			create_time
+ 		)values(
+ 			<if test="company != null and company != ''">#{company},</if>
+ 			<if test="employeeid != null and employeeid != ''">#{employeeid},</if>
+ 			<if test="user_name != null and user_name != ''">#{user_name},</if>
+ 			<if test="phonenumber != null and phonenumber != ''">#{phonenumber},</if>	
+ 			<if test="email != null and email != ''">#{email},</if>
+ 			<if test="createBy != null and createBy != ''">#{createBy},</if>
+ 			sysdate
+ 		)
+ 	</insert>
+ 	<update id="updateMaintenance" parameterType="SysMaintenance" >
+ 		update fcms_contact
+ 		<set>
+ 			<if test="user_name != null and user_name != ''">user_name = #{user_name},</if>
+ 			<if test="phonenumber != null and phonenumber != ''">phonenumber = #{phonenumber},</if>	
+ 			<if test="email != null and email != ''">email = #{email},</if>
+ 			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+ 			update_time = sysdate
+ 		</set>
+ 		where employeeid = #{employeeid}
+ 	</update>
+ 	 <delete id="sysMaintenanceDeletes" parameterType="String">
+ 	    delete from fcms_contact where employeeid in
+		<foreach collection="array" item="employeeid" open="(" separator="," close=")" >
+ 			#{employeeid}
+        </foreach> 
+ 	</delete>	
+</mapper> 

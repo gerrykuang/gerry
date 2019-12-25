@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header">
+<link rel="shortcut icon" href="favicon.ico">
+<link href="../config/config.yml">
+<link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+</head>
+<body class="gray-bg">
+		<div class="div" style="position:absolute;top:50%;left:45%;color:#FF0000;font-size:250%;"> 
+			<ul>
+				<li>
+					<a  href=url style="display: block; text-align: center;">化學品領用</a>
+				</li>
+			</ul>
+		</div> 
+</body>
+<script th:inline="javascript">
+$.ajax({
+	   type: "POST",
+	   url: "v4/api/film/now-playing", 
+	　　data: {
+	　　　　t:"1539401039415",
+	　　　　page:"1",
+	　　　　count:"5"
+	　　}, 
+	　　success: function(result){
+	　　　　 return result
+	　　} 
+	});
+	
+</script>
+</html>

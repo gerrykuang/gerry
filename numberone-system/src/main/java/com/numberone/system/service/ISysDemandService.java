@@ -1,0 +1,19 @@
+package com.numberone.system.service;
+
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
+import com.numberone.system.domain.SysDemand;
+
+public interface ISysDemandService {
+	/**
+	 * 分頁查詢每月需求量
+	 * @param demand_id
+	 * @return
+	 */
+	public List<SysDemand> selectDemandList(SysDemand demand_id);
+	
+	public String checkMaterial(String company,String material);
+
+	/** 添加每月需求*/
+	public int insertDemand(SysDemand demand);
+}

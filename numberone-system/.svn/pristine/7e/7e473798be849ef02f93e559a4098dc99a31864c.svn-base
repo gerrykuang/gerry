@@ -1,0 +1,103 @@
+package com.numberone.system.domain;
+
+import java.util.Date;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.numberone.common.annotation.Excel;
+import com.numberone.common.base.BaseEntity;
+
+public class SysException extends BaseEntity{
+	
+	private static final long serialVersionUID = 1L;
+	
+	private Long exception;
+	public void setException(Long exception) {
+		this.exception = exception;
+	}
+
+	@Excel(name="料號")
+	private String material;
+	@Excel(name="品名")
+	private String trade_name;
+	@Excel(name="數量")
+	private String quantity;
+	@Excel(name="異常原因")
+	private String exception_case;
+	@Excel(name="處理方法")
+	private String handle_action;
+	@Excel(name="處理人員")
+	private String create_by;
+	@Excel(name="發生時間")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	private Date create_time;
+	
+	public String getCreate_by() {
+		return create_by;
+	}
+	public void setCreate_by(String create_by) {
+		this.create_by = create_by;
+	}
+	public Date getCreate_time() {
+		return create_time;
+	}
+	public void setCreate_time(Date create_time) {
+		this.create_time = create_time;
+	}
+	public Long getException() {
+		return exception;
+	}
+	public void setException_id(Long exception) {
+		this.exception = exception;
+	}
+	public String getMaterial() {
+		return material;
+	}
+	public void setMaterial(String material) {
+		this.material = material;
+	}
+	public String getTrade_name() {
+		return trade_name;
+	}
+	public void setTrade_name(String description) {
+		this.trade_name = description;
+	}
+	public String getQuantity() {
+		return quantity;
+	}
+	public void setQuantity(String quantity) {
+		this.quantity = quantity;
+	}
+	public String getException_case() {
+		return exception_case;
+	}
+	public void setException_case(String exception_case) {
+		this.exception_case = exception_case;
+	}
+	public String getHandle_action() {
+		return handle_action;
+	}
+	public void setHandle_action(String handle_action) {
+		this.handle_action = handle_action;
+	}
+
+	@Override
+	public  String toString() {
+        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
+        		.append("exception", getException())
+                .append("material", getMaterial())
+                .append("Trade_name", getTrade_name())
+                .append("quantity", getQuantity())
+                .append("exception_case", getException_case())
+                .append("hand_action", getHandle_action())
+                .append("createBy", getCreateBy())
+                .append("createTime", getCreateTime())
+                .append("updateBy", getUpdateBy())
+                .append("updateTime", getUpdateTime())  
+                .toString();
+        }
+	
+	
+}

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberone.system.mapper.SysMaterialMapper">
+
+	<resultMap type="SysMaterial" id="SysMaterialResult">
+		<id     property="material"   column="material"      />
+		<result property="description" column="description"  />
+		<result property="company"     column="company"   />
+		<result property="plant"     column="plant"   />
+		<result property="trade_name" column="trade_name"  />
+		<result property="delete_flag"     column="delete_flag"   />
+		<result property="category" column="category"  />
+		<result property="sys_flag"     column="sys_flag"   />
+		<result property="unit"     column="unit"   />
+		<result property="brand"     column="brand"   />
+		<result property="spec" column="spec"  />
+		<result property="createBy"     column="create_by"   />		
+		<result property="createTime"   column="create_time" />
+		<result property="updateBy"     column="update_by"   />
+		<result property="updateTime"   column="update_time" />
+		<result property="remark"     column="remark"   />	
+	</resultMap>
+	<sql id="selectMaterialVo">
+		SELECT a.company,a.plant,a.trade_name,a.material,a.description,a.category,a.sys_flag,a.delete_flag,a.spec,a.brand,a.unit,a.remark,a.create_time,a.create_by 
+        FROM fcms_material a
+	</sql>
+	<select id="selectMaterialList" parameterType="SysMaterial" resultMap="SysMaterialResult">
+		<include refid="selectMaterialVo"/>
+		where 1=1
+		<if test="material != null and material != ''">
+			and a.material like ('%'||#{material}||'%')
+		</if>
+		<if test="description != null and description != ''">
+			and a.description like ('%'||#{description}||'%')
+		</if>
+	</select>
+	<select id="selectMaterial"  parameterType="SysMaterial" resultMap="SysMaterialResult">
+		<include refid="selectMaterialVo"/>
+	</select>
+    <select id="selectMaterialId"  parameterType="String" resultMap="SysMaterialResult">
+		<include refid="selectMaterialVo"/>
+			where  a.material = #{material}
+	</select>
+	<select id="checkMaterialUnique" parameterType="String" resultType="int">
+		select count(1) from fcms_material where material=#{material}
+	</select>
+	<insert id="insertMaterial" parameterType="SysMaterial">
+ 		insert into fcms_material(
+ 			<if test="material != null and material != ''">material,</if>
+ 			<if test="description != null and description != ''">description,</if>
+ 			<if test="delete_flag != null and delete_flag != ''">delete_flag,</if>	
+ 			<if test="company != null and company != ''">company,</if>
+ 			<if test="plant != null and plant != ''">plant,</if>
+ 			<if test="category != null and category != ''">category,</if>
+ 			<if test="trade_name != null and trade_name != ''">trade_name,</if>
+ 			<if test="brand != null and brand != ''">brand,</if>
+ 			<if test="sys_flag != null and sys_flag != ''">sys_flag,</if>
+ 			<if test="spec != null and spec != ''">spec,</if>
+ 			<if test="unit != null and unit != ''">unit,</if>
+ 			<if test="remark != null and remark != ''">remark,</if>
+ 			<if test="createBy != null and createBy != ''">create_by,</if>
+ 			create_time
+ 		)values(
+ 			<if test="material != null and material != ''">#{material},</if>
+ 			<if test="description != null and description != ''">#{description},</if>
+ 			<if test="delete_flag != null and delete_flag != ''">#{delete_flag},</if>	
+ 			<if test="company != null and company != ''">#{company},</if>
+ 			<if test="plant != null and plant != ''">#{plant},</if>
+ 			<if test="category != null and category != ''">#{category},</if>
+ 			<if test="trade_name != null and trade_name != ''">#{trade_name},</if>
+ 			<if test="brand != null and brand != ''">#{brand},</if>
+ 			<if test="sys_flag != null and sys_flag != ''">#{sys_flag},</if>
+ 			<if test="spec != null and spec != ''">#{spec},</if>
+ 			<if test="unit != null and unit != ''">#{unit},</if>
+ 			<if test="remark != null and remark != ''">#{remark},</if>
+ 			<if test="createBy != null and createBy != ''">#{createBy},</if>
+ 			sysdate
+ 		)
+	</insert>	
+ 	<delete id="deleteMaterials" parameterType="String">
+ 	    delete from fcms_material where material in
+		<foreach collection="array" item="material" open="(" separator="," close=")" >
+ 			#{material}
+        </foreach> 
+ 	</delete>
+ 	
+ 	<update id="updateMaterial" parameterType="SysMaterial">
+ 		update fcms_material
+ 		<set> 			
+  			<if test="description != null and description != ''">description = #{description},</if> 
+ 			<if test="delete_flag != null and delete_flag != ''">delete_flag = #{delete_flag},</if>	
+ 			<if test="company != null and company != ''">company = #{company},</if>
+ 			<if test="plant != null and plant != ''">plant = #{plant},</if>
+ 			<if test="category != null and category != ''">category = #{category},</if>
+ 			<if test="trade_name != null and trade_name != ''">trade_name = #{trade_name},</if>
+ 			<if test="brand != null and brand != ''">brand = #{brand},</if>
+ 			<if test="spec != null and spec != ''">spec = #{spec},</if>
+ 			<if test="unit != null and unit != ''">unit = #{unit},</if>
+ 			<if test="sys_flag != null and sys_flag != ''">sys_flag = #{sys_flag},</if>
+ 			<if test="remark != null and remark != ''">remark = #{remark},</if>
+ 			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+ 			update_time = sysdate
+ 		</set>
+ 		where material = #{material}
+	</update>
+</mapper> 

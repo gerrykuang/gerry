@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form-material-add">
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">物料品名：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="trade_name" id="trade_name"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">料號：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="material" id="material"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">物料描述：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="description" id="description">
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">物料類型：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="category" id="category"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">管控系統：</label>
+				<div class="col-sm-8">
+					<select name="sys_flag" class="form-control m-b" th:with="type=${@dict.getType('fcms_material_system')}">
+	                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+	                </select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">物料品牌：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="brand" id="brand"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">規格型號：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="spec" id="spec"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">計量單位：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="unit" value="PCS" id="unit" disabled="disabled"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">備註：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="remark" id="remark">
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label class="col-sm-3 control-label">刪除標記：</label>
+				<div class="col-sm-8">
+					<select name="delete_flag" class="form-control m-b" th:with="type=${@dict.getType('delete_flag')}">
+	                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+	                </select>
+				</div>
+			</div>
+			
+		</form>
+	</div>
+	<div th:include="include::footer"></div>
+	<script type="text/javascript">
+	
+		var prefix = ctx + "mtdata/material";		
+		
+		$("#form-material-add").validate({
+			rules:{
+				material:{
+					required:true,
+					remote: {
+		                url: ctx + "mtdata/material/checkMaterialUnique",
+		                type: "post",
+		                dataType: "json",
+		                data: {
+		                	"material" : function() {
+		                		return $.common.trim($("#material").val());
+		                    }
+		                },
+		                dataFilter: function(data, type) {
+		                	return $.validate.unique(data);
+		                }
+		            }
+				},
+			},
+			messages: {
+		        "material": {
+		            remote: "物料已经存在"
+		        }
+		    }
+		}); 
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	        	$.operate.save(prefix + "/add", $('#form-material-add').serialize());
+	        }
+	    }
+	
+	</script>
+</body>
+</html>

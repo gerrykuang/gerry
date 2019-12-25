@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberone.system.mapper.SysMaterialMapper">
+
+	<resultMap type="SysMaterial" id="SysMaterialResult">
+		<id     property="material"   column="material"      />
+		<result property="description" column="description"  />
+		<result property="createBy"     column="create_by"   />
+		<result property="createTime"   column="create_time" />
+		<result property="updateBy"     column="update_by"   />
+		<result property="updateTime"   column="update_time" />
+		<result property="clas_flag" column="clas_flag"      />
+	</resultMap>
+	<sql id="selectMaterialVo">
+		SELECT a.material,a.description,a.clas_flag,a.create_time,a.create_by 
+        FROM SYS_MATERIAL a
+	</sql>
+	<select id="selectMaterialList" parameterType="SysMaterial" resultMap="SysMaterialResult">
+		<include refid="selectMaterialVo"/>
+		where 1=1
+		<if test="material != null and material != ''">
+			and a.material like ('%'||#{material}||'%')
+		</if>
+		<if test="description != null and description != ''">
+			and a.description like ('%'||#{description}||'%')
+		</if>
+	</select>
+	<select id="selectMaterial"  parameterType="SysMaterial" resultMap="SysMaterialResult">
+		<include refid="selectMaterialVo"/>
+	</select>
+    <select id="selectMaterialId"  parameterType="String" resultMap="SysMaterialResult">
+		<include refid="selectMaterialVo"/>
+			where  a.material = #{material}
+	</select>
+	<select id="checkMaterialUnique" parameterType="String" resultType="int">
+		select count(1) from sys_material where material=#{material}
+	</select>
+	<insert id="insertMaterial" parameterType="SysMaterial">
+ 		insert into sys_material(
+ 			<if test="material != null and material != ''">material,</if>
+ 			<if test="description != null and description != ''">description,</if>
+ 			<if test="clas_flag != null and clas_flag != ''">clas_flag,</if>
+ 			<if test="createBy != null and createBy != ''">create_by,</if>
+ 			create_time
+ 		)values(
+ 			<if test="material != null and material != ''">#{material},</if>
+ 			<if test="description != null and description != ''">#{description},</if>
+ 			<if test="clas_flag != null and clas_flag != ''">#{clas_flag},</if>
+ 			<if test="createBy != null and createBy != ''">#{createBy},</if>
+ 			sysdate
+ 		)
+	</insert>
+	<delete id="deleteMaterial" parameterType="String">
+ 		delete from sys_material where material = #{material}
+ 	</delete>
+	
+ 	<delete id="deleteMaterials" parameterType="String">
+ 	    delete from sys_material where material in
+		<foreach collection="array" item="material" open="(" separator="," close=")" >
+ 			#{material}
+        </foreach> 
+ 	</delete>
+ 	
+ 	<update id="updateMaterial" parameterType="SysMaterial">
+ 		update sys_material
+ 		<set>
+ 			<if test="material != null and material != 0">material = #{material},</if>
+ 			<if test="description != null and description != ''">description = #{description},</if>
+ 			<if test="clas_flag != null and clas_flag != ''">clas_flag = #{clas_flag},</if>
+ 			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+ 			update_time = sysdate
+ 		</set>
+ 		where material = #{material}
+	</update>
+</mapper> 

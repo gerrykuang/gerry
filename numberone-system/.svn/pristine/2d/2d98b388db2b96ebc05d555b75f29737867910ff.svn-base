@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberone.system.mapper.SysStockMapper">
+
+	<resultMap type="SysStock" id="SysStockResult">
+		<id     property="company"        column="company"        />
+		<result property="material"       column="material"      />
+		<result property="category"       column="category"    />
+		<result property="trade_name"     column="trade_name"      />
+		<result property="warehouse"      column="warehouse"      />
+		<result property="sfsStock_qty"   column="sfsStock_qty"            />
+		<result property="curStock_qty"   column="curStock_qty"      />
+		<result property="this_mon_used"  column="this_mon_used"        />
+		<result property="this_mon_avail" column="this_mon_avail"          />
+		<result property="demand_qty"     column="demand_qty"           />
+		<result property="gap_qty"        column="gap_qty"      />
+		<result property="gap_rate"       column="gap_rate"    />
+		<result property="suggest_qty"    column="suggest_qty"    />
+	</resultMap>
+	
+	<sql id="selectStockVo">
+        select company,material,category,trade_name,warehouse,sfsStock_qty,curStock_qty,this_mon_used
+           ,this_mon_avail,demand_qty,gap_qty,gap_rate,suggest_qty
+		from VW_STOCK_REPORT s
+    </sql>
+    
+    <sql id="StockVo">
+        company,material,category,trade_name,warehouse,sfsStock_qty,curStock_qty,this_mon_used
+           ,this_mon_avail,demand_qty,gap_qty,gap_rate,suggest_qty
+    </sql>
+    
+	<select id="selectStockList" parameterType="SysStock" resultMap="SysStockResult">
+	  <include refid="selectStockVo" />
+	  <trim  prefix="where" prefixOverrides="and" suffixOverrides="">
+	    <if test="company!=null and company!=''">company=#{company}</if>
+	    <if test="material!=null and material!=''"> and material=#{material}</if>
+	  </trim>
+	</select>
+</mapper> 

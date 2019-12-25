@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberone.system.mapper.SysDemandMapper">
+
+	<resultMap type="SysDemand" id="SysDemandResult">
+		<id     property="demand_id"   column="demand_id" 			/>
+		<result property="company" column="company"					/>
+		<result property="material" column="material" 				/>	
+		<result property="trade_name" column="trade_name" 			/>
+		<result property="category"     column="category"   		/>
+		<result property="unit"     column="unit"					/>
+		<result property="demand_year" column="demand_year" 		/>
+		<result property="demand_month"     column="demand_month"  	/>
+		<result property="demand_qty"   column="demand_qty" 		/>
+		<result property="maintenan_freq" column="maintenan_freq"  	/>
+		<result property="singleuse_qty"     column="singleuse_qty"	/>
+		<result property="remark"     column="remark"   			/>
+		<result property="createBy"     column="create_by"			/>
+		<result property="createTime" column="create_time" 			/>
+		<result property="updateBy"     column="update_by"   		/>
+		<result property="updateTime"   column="update_time" 		/>
+	</resultMap>
+	<sql id="selectDemandVo">
+		SELECT a.demand_id,a.company,a.singleuse_qty,a.remark,a.material,a.trade_name,a.category, a.unit,a.demand_year,a.demand_month,a.demand_qty,a.maintenan_freq, a.create_time,a.create_by
+        FROM fcms_demand a
+	</sql>
+	<select id="selectDemandList" parameterType="SysDemand" resultMap="SysDemandResult">
+		<include refid="selectDemandVo"/>
+		    where 1=1
+		<if test="demand_id != null and demand_id != ''">
+			and a.demand_id like ('%'||#{demand_id}||'%')
+		</if>
+		<if test="company != null and company != ''">
+			and a.company like ('%'||#{company}||'%')
+		</if>
+		<if test="material != null and material != ''">
+			and a.material like ('%'||#{material}||'%')
+		</if>
+	</select>
+    <select id="selectDemandId"  parameterType="String" resultMap="SysDemandResult">
+		<include refid="selectDemandVo"/>
+			where  a.demand_id = #{demand_id}
+	</select>
+	<select id="checkMaterial" parameterType="String" resultType="int">
+		select count(1) from fcms_material where material=#{material} 
+	</select>
+	
+	<insert id="insertDemand" parameterType="SysDemand"  useGeneratedKeys="true" keyProperty="demand_id">
+	  <selectKey keyProperty="demand_id" resultType="long" order="BEFORE">
+           SELECT REQ_FCMS_DEMAND.NEXTVAL FROM DUAL  
+      </selectKey>
+      
+	  insert into fcms_demand (
+	     <trim prefix="" prefixOverrides="," suffixOverrides=",">
+	      <if test="demand_id!=0">demand_id</if>
+	      <if test=" company!=null and company!=''">,company </if>
+	      <if test=" material!=null and material!=''">,material </if>
+	      <if test=" trade_name!=null and trade_name!=''">  ,trade_name  </if>
+	      <if test=" category!=null and category!=''">  ,category </if>
+	      <if test=" unit!=null and unit!=''"> ,unit </if>
+	      <if test=" demand_year!=null and demand_year!=''"> ,demand_year</if>
+	      <if test=" demand_month!=null and demand_month!=''"> ,demand_month </if>
+	       ,demand_qty
+	      <if test=" maintenan_freq!=null and maintenan_freq!=''"> ,maintenan_freq </if>
+	      <if test=" singleuse_qty!=null and singleuse_qty!=''">,singleuse_qty  </if>
+	      <if test=" remark!=null and remark!=''"> ,remark </if>
+	     </trim>
+	     ) values ( 
+	     <trim prefix="" prefixOverrides="," suffixOverrides=",">
+	      <if test=" demand_id!=0"> #{demand_id} </if>
+	      <if test=" company!=null and company!=''"> ,#{company}</if>
+	      <if test=" material!=null and material!=''"> ,#{material} </if>
+	      <if test=" trade_name!=null and trade_name!=''"> ,#{trade_name}</if>
+	      <if test=" category!=null and category!=''"> ,#{category} </if>
+	      <if test=" unit!=null and unit!=''">,#{unit}  </if>
+	      <if test=" demand_year!=null"> ,#{demand_year}  </if>
+	      <if test=" demand_month!=null and demand_month!=''"> ,#{demand_month} </if>
+	        ,#{demand_qty}
+	      <if test=" maintenan_freq!=null and maintenan_freq!=''">,#{maintenan_freq} </if>
+	      <if test=" singleuse_qty!=null and singleuse_qty!=''"> ,#{singleuse_qty} </if>
+	      <if test=" remark!=null and remark!=''"> ,#{remark} </if>
+	     </trim>
+	      )
+	</insert>
+</mapper> 

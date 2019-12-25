@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form-safetyStock-edit" th:object="${safetyStock}" >			
+			<input id="sfstock_id" name="sfstock_id"  th:field="*{sfstock_id}" type="hidden"/>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">公司別：</label>
+				<div class="col-sm-8">					
+					<input class="form-control" type="text" name="company" id="company"  th:field="*{company}" disabled="disabled">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">物料：</label>
+				<div class="col-sm-8">					
+					<input class="form-control" type="text" name="material" id="material" th:field="*{material}" disabled="disabled">
+				</div>
+			</div>				
+			<div class="form-group">
+				<label class="col-sm-3 control-label">品名：</label>
+				<div class="col-sm-8">					
+					<input class="form-control" type="text" name="trade_name" id="trade_name"  th:field="*{trade_name}" disabled="disabled" >
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">安全庫存：</label>
+				<div class="col-sm-8">					
+					<input class="form-control" type="text" name="sfstock_qty" id="sfstock_qty" th:field="*{sfstock_qty}" >
+				</div>
+			</div>				
+			<div class="form-group">
+				<label class="col-sm-3 control-label">計量單位：</label>
+				<div class="col-sm-8">					
+					<input class="form-control" type="text" name="unit" id="unit"  th:field="*{unit}" disabled="disabled" >
+				</div>
+			</div>	
+		</form>
+	</div>
+	<div th:include="include::footer"></div>
+	<script type="text/javascript">
+	
+		var prefix = ctx + "mtdata/safetyStock";		
+		
+		function submitHandler() {
+	        
+	        	$.operate.save(prefix + "/edit", $('#form-safetyStock-edit').serialize());
+	       
+	    }
+	
+	</script>
+</body>
+</html>

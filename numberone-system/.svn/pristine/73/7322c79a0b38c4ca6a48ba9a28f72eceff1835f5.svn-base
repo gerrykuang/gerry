@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberone.system.mapper.SysExceptionMapper">
+
+	<resultMap type="SysException" id="SysExceptionResult">
+		<id     property="exception"   column="exception_id" />
+		<result property="material" column="material"  			/>
+		<result property="description" column="description"  	/>
+		<result property="quantity"     column="quantity"   	/>
+		<result property="exception_case"     column="exception_case"/>
+		<result property="handle_action" column="handle_action" />
+		<result property="createBy"     column="create_by"   	/>		
+		<result property="createTime"   column="create_time" 	/>
+		<result property="updateBy"     column="update_by"   	/>
+		<result property="updateTime"   column="update_time" 	/>
+	</resultMap>
+	<sql id="selectExceptionVo">
+		SELECT a.exception_id,a.material,a.description,a.quantity,a.exception_case,a.handle_action,a.create_time,a.create_by 
+        FROM fcms_exception a
+	</sql>
+	<select id="selectExceptionList" parameterType="SysException" resultMap="SysExceptionResult">
+		<include refid="selectExceptionVo"/>
+		where 1=1
+		<if test="exception != null and exception != ''">
+			and a.exception_id like ('%'||#{exception}||'%')
+		</if>
+		<if test="material != null and material != ''">
+			and a.material like ('%'||#{material}||'%')
+		</if>
+	</select>
+	<select id="selectException"  parameterType="SysException" resultMap="SysExceptionResult">
+		<include refid="selectExceptionVo"/>
+	</select>
+    <select id="selectExceptionId"  parameterType="String" resultMap="SysExceptionResult">
+		<include refid="selectExceptionVo"/>
+			where  a.exception_id = #{exception}
+	</select>
+	
+</mapper> 

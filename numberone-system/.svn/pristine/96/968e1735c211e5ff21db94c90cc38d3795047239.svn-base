@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberone.system.mapper.SysUseReportMapper">
+
+	<resultMap type="SysUseReport" id="SysUseReportResult">
+		
+		<result property="company" column="company"					/>
+		<result property="material" column="material" 				/>	
+		<result property="trade_name" column="trade_name" 			/>
+		<result property="demand_year" column="demand_year" 		/>
+		<result property="jan_demand_qty"     column="jan_demand_qty"  	/>
+		<result property="jan_actual_qty"   column="jan_actual_qty" 	/>
+		<result property="feb_demand_qty"     column="feb_demand_qty"  	/>
+		<result property="feb_actual_qty"   column="feb_actual_qty" 	/>
+		<result property="mar_demand_qty"     column="mar_demand_qty"  	/>
+		<result property="mar_actual_qty"   column="mar_actual_qty" 	/>
+		<result property="apr_demand_qty"     column="apr_demand_qty"  	/>
+		<result property="apr_actual_qty"   column="apr_actual_qty" 	/>
+		<result property="may_demand_qty"     column="may_demand_qty"  	/>
+		<result property="may_actual_qty"   column="may_actual_qty" 	/>
+		<result property="jun_demand_qty"     column="jun_demand_qty"  	/>
+		<result property="jun_actual_qty"   column="jun_actual_qty" 	/>
+		<result property="jul_demand_qty"     column="jul_demand_qty"  	/>
+		<result property="jul_actual_qty"   column="jul_actual_qty" 	/>
+		<result property="aug_demand_qty"     column="aug_demand_qty"  	/>
+		<result property="aug_actual_qty"   column="aug_actual_qty" 	/>
+		<result property="sep_demand_qty"     column="sep_demand_qty"  	/>
+		<result property="sep_actual_qty"   column="sep_actual_qty" 	/>
+		<result property="dec_demand_qty"     column="dec_demand_qty"  	/>
+		<result property="dec_actual_qty"   column="dec_actual_qty" 	/>
+		<result property="nov_demand_qty"     column="nov_demand_qty"  	/>
+		<result property="nov_actual_qty"   column="nov_actual_qty" 	/>
+		<result property="oct_demand_qty"     column="oct_demand_qty"  	/>
+		<result property="oct_actual_qty"   column="oct_actual_qty" 	/>
+		<result property="to_wh_deptid"   column="to_wh_deptid" 	/>
+	</resultMap>
+	<sql id="selectUseReportVo">
+		SELECT a.to_wh_deptid,a.company,a.material,a.trade_name,a.demand_year,a.jan_demand_qty,a.jan_actual_qty,
+		    feb_demand_qty,feb_actual_qty,mar_demand_qty,mar_actual_qty,apr_demand_qty,apr_actual_qty,may_demand_qty,
+			may_actual_qty,jun_demand_qty,jun_actual_qty,jul_demand_qty,jul_actual_qty,aug_demand_qty,aug_actual_qty,
+			sep_demand_qty,sep_actual_qty,dec_demand_qty,dec_actual_qty,nov_demand_qty,nov_actual_qty,oct_demand_qty,
+			oct_actual_qty
+        FROM vw_use_report a
+	</sql>
+	<select id="selectUseReportList" parameterType="SysUseReport" resultMap="SysUseReportResult">
+		<include refid="selectUseReportVo"/>
+		    where 1=1
+	</select>
+
+</mapper> 

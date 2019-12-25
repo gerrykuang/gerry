@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	
+	<div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="role-form">
+					<div class="select-list">
+						<ul>
+							<li>
+								公司別：<select name="company" th:with="type=${@dict.getType('fcms_company')}">
+	                    		<option value="">所有</option>
+	                    		<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+	                			</select>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							    <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			<!-- 增刪改料號 -->
+			<div class="btn-group-sm show-xs" id="toolbar" role="group">
+	            <a class="btn btn-warning" onclick="$('#bootstrap-table').tableExport({ type: 'excel', escape: 'false' })" shiro:hasPermission="mtdata:usageReport:export">
+		            <i class="fa fa-download"></i> 导出
+		        </a>
+	        </div>
+	        
+			<div class="col-sm-12 select-table table-striped">
+			    <table id="bootstrap-table" class="table table-bordered" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+	<div th:include="include :: footer"></div>
+	<script th:inline="javascript">
+	var prefix = ctx + "mtdata/usageReport";
+	
+
+	$(function() {
+	    var options = {
+	        url: prefix + "/list",
+	        //exportUrl: prefix + "/export",
+	        sortName: "company",
+	        modalName: "化學品用量報表 ",
+	        search: false,
+	        exportDataType: "basic",   //basic', 'all', 'selected'.
+	        showExport: false,
+	        columns: [
+	             [{
+	          	field: 'company',//必須寫在第一個，不然edit找不到
+	       		title: '公司別',
+	        	align: 'center',
+	        	valign: 'middle',
+	        	width: 100,
+	        	height:10,
+	        	rowspan: 2,
+	        	visable:false,
+	        	halign:"center"
+	    		} , 
+	    	        {
+	    	    field: 'material',//必須寫在第一個，不然edit找不到
+	    	    title: '物料',
+	    	    align: 'center',
+	    	    valign: 'middle',
+	    	    width: 100,
+	    	    height:10,
+	    	    rowspan: 2,
+	    	    halign:"center"
+	    	        }  ,
+	    	        {
+	    	    field: 'trade_name',//必須寫在第一個，不然edit找不到
+	    	    title: '品名',
+	    	    align: 'center',
+	    	    valign: 'middle',
+	    	    rowspan: 2,
+	    	    width: 100,
+	    	    halign:"center"
+	    	        },{
+	            field: 'avg_last_year',
+	            title: '去年平均',
+	        	align: 'center',
+	        	valign: 'middle',
+	            rowspan: 2
+	        } ,{
+	            //field: 'demand_year',
+	            title: '2019年',//這個地方寫死了 後期 需要維護 
+	        	align: 'center',
+	        	valign: 'middle',
+	            colspan:13
+	        } ],
+	    	[{
+	            field: 'avg_this_year',
+	            title: '今年平均',
+	            align: 'center'
+	        }, {
+	            field: 'jan',
+	            title: '1月',
+	            align: 'center'
+	        }, {
+	            field: 'feb',
+	            title: '2月',
+	            align: 'center'
+	        }, {
+	            field: 'mar',
+	            title: '3月',
+	            align: 'center'
+	        }, {
+	            field: 'apr',
+	            title: '4月',
+	            align: 'center'
+	        }, {
+	            field: 'may',
+	            title: '5月',
+	            align: 'center',
+	        }, {
+	            field: 'jun',
+	            title: '6月',
+	            align: 'center'
+	        }, {
+	            field: 'jul',
+	            title: '7月',
+	            align: 'center'
+	        }, {
+	            field: 'aug',
+	            title: '8月',
+	            align: 'center'
+	        }, {
+	            field: 'sep',
+	            title: '9月',
+	            align: 'center'
+	        }, {
+	            field: 'oct',
+	            title: '10月',
+	            align: 'center'
+	        }, {
+	            field: 'nov',
+	            title: '11月',
+	            align: 'center'
+	        }, {
+	            field: 'dec',
+	            title: '12月',
+	            align: 'center'
+	        }]] 
+	    };
+	    $.table.init(options);
+	});
+	
+	</script>
+</body>
+</html>

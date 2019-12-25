@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberone.system.mapper.SysCapacityMapper">
+
+	<resultMap type="SysCapacity" id="SysCapacityResult">
+		<result	    property="company" column="company"					/>
+		<result property="income_year" column="income_year" 		/>	
+		<result property="income_month" column="income_month" 		/>
+		<result property="income_qty"     column="income_qty"   	/>
+		<result property="remark"     column="remark"   			/>
+		<result property="createBy"     column="create_by"			/>
+		<result property="createTime" column="create_time" 			/>
+		<result property="updateBy"     column="update_by"   		/>
+		<result property="updateTime"   column="update_time" 		/>
+	</resultMap>
+	<sql id="selectCapacityVo">
+		SELECT a.company,a.income_year,a.income_month,a.income_qty,a.remark,a.create_time,a.create_by
+        FROM fcms_capacity a
+	</sql>
+	<select id="selectCapacityList" parameterType="SysCapacity" resultMap="SysCapacityResult">
+		<include refid="selectCapacityVo"/>
+<!-- 		where 1=1
+		<if test="company != null and company != ''">
+			and a.company like ('%'||#{company}||'%')
+		</if>
+		<if test="income_year != null and income_year != ''">
+			and a.income_year like ('%'||#{income_year}||'%')
+		</if> -->
+	</select>
+	
+</mapper> 

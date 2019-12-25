@@ -1,0 +1,13 @@
+package com.numberone.system.mapper;
+
+import java.util.List;
+import com.numberone.system.domain.SysSafetyStock;
+
+public interface SysSafetyStockMapper {
+	/**
+	 * 分頁查詢安全庫存
+	 * @param sfstock_id
+	 * @return
+	 */
+	public List<SysSafetyStock> selectSafetyStockList(SysSafetyStock sfstock_id);
+}

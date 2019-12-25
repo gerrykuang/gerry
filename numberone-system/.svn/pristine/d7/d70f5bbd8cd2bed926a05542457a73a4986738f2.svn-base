@@ -1,0 +1,98 @@
+package com.numberone.system.domain;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+import com.numberone.common.annotation.Excel;
+import com.numberone.common.base.BaseEntity;
+
+
+public class SysUseReport extends BaseEntity{
+	private static final long serialVersionUID = 1L;
+	
+	@Excel(name="公司別")
+	private String company;
+	@Excel(name="物料")
+	private String	material;
+	@Excel(name="別名")
+	private String	trade_name;
+	@Excel(name="領用部門ID")
+	private String to_wh_deptid;
+	@Excel(name="需求")
+	private String demand_qty;
+	@Excel(name="實際")
+	private String qty;
+	
+	private String demand_year;
+	private String demand_month;
+	public String getCompany() {
+		return company;
+	}
+	public void setCompany(String company) {
+		this.company = company;
+	}
+	public String getMaterial() {
+		return material;
+	}
+	public void setMaterial(String material) {
+		this.material = material;
+	}
+	public String getTrade_name() {
+		return trade_name;
+	}
+	public void setTrade_name(String trade_name) {
+		this.trade_name = trade_name;
+	}
+	public String getTo_wh_deptid() {
+		return to_wh_deptid;
+	}
+	public void setTo_wh_deptid(String to_wh_deptid) {
+		this.to_wh_deptid = to_wh_deptid;
+	}
+	public String getDemand_qty() {
+		return demand_qty;
+	}
+	public void setDemand_qty(String demand_qty) {
+		this.demand_qty = demand_qty;
+	}
+	public String getQty() {
+		return qty;
+	}
+	public void setQty(String qty) {
+		this.qty = qty;
+	}
+	public String getDemand_year() {
+		return demand_year;
+	}
+	public void setDemand_year(String demand_year) {
+		this.demand_year = demand_year;
+	}
+	public String getDemand_month() {
+		return demand_month;
+	}
+	public void setDemand_month(String demand_month) {
+		this.demand_month = demand_month;
+	}
+	
+	@Override
+    public String toString() {
+        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
+            
+            .append("company",getCompany())
+            .append("material", getMaterial())   
+            .append("trade_name", getTrade_name())                      
+            .append("demand_year",getDemand_year())
+            .append("demand_month", getDemand_month())
+            .append("demand_qty", getDemand_qty())
+            .append("qty", getQty())            
+            .append("to_wh_deptid", getTo_wh_deptid())
+            .append("remark",getRemark())
+            .append("createBy", getCreateBy())
+            .append("createTime", getCreateTime())
+            .append("updateBy", getUpdateBy())
+            .append("updateTime", getUpdateTime())
+            .toString();
+    }
+	
+	
+}

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberone.system.mapper.SysSafetyStockMapper">
+
+	<resultMap type="SysSafetyStock" id="SysSafetyStockResult">
+		<id     property="sfstock_id"   column="sfstock_id" 		/>
+		<result property="company" column="company"					/>
+		<result property="material" column="material" 				/>	
+		<result property="trade_name" column="trade_name" 			/>
+		<result property="sfstock_qty"     column="sfstock_qty"   	/>
+		<result property="unit"     column="unit"   				/>
+		<result property="createBy"     column="create_by"			/>
+		<result property="createTime" column="create_time" 			/>
+		<result property="updateBy"     column="update_by"   		/>
+		<result property="updateTime"   column="update_time" 		/>
+	</resultMap>
+	<sql id="selectSafetyStockVo">
+		SELECT a.sfstock_id,a.company,a.sfstock_qty,a.unit,a.material,a.trade_name,a.create_time,a.create_by
+        FROM fcms_sfstock a
+	</sql>
+	<select id="selectSafetyStockList" parameterType="SysSafetyStock" resultMap="SysSafetyStockResult">
+		<include refid="selectSafetyStockVo"/>
+		where 1=1
+		<if test="sfstock_id != null and sfstock_id != ''">
+			and a.sfstock_id like ('%'||#{sfstock_id}||'%')
+		</if>
+		<if test="company != null and company != ''">
+			and a.company like ('%'||#{company}||'%')
+		</if>
+		<if test="material != null and material != ''">
+			and a.material like ('%'||#{material}||'%')
+		</if>
+	</select>
+
+</mapper> 

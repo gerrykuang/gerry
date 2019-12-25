@@ -1,0 +1,54 @@
+package com.numberone.system.domain;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+import com.numberone.common.base.BaseEntity;
+
+public class SysMaintenance  extends BaseEntity {
+	
+	private static final long serialVersionUID = 1L;
+	private String employeeid;
+	private String user_name;
+	private	String phonenumber;
+	private	String email;
+	
+	public String getEmployeeid() {
+		return employeeid;
+	}
+	public void setEmployeeid(String employeeid) {
+		this.employeeid = employeeid;
+	}
+	public String getUser_name() {
+		return user_name;
+	}
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
+	}
+	public String getPhonenumber() {
+		return phonenumber;
+	}
+	public void setPhonenumber(String phonenumber) {
+		this.phonenumber = phonenumber;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	
+	@Override
+    public String toString() {
+        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
+            .append("employeeid", getEmployeeid())
+            .append("user_name", getUser_name())
+            .append("phonenumber", getPhonenumber())
+            .append("email", getEmail())
+            .append("createBy", getCreateBy())
+            .append("createTime", getCreateTime())
+            .append("updateBy", getUpdateBy())
+            .append("updateTime", getUpdateTime())
+            .toString();
+    }
+}

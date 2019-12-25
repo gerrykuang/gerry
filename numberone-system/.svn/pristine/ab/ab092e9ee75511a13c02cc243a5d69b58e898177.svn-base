@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberone.system.mapper.SysUseReportMapper">
+
+	<resultMap type="SysUseReport" id="SysUseReportResult">
+		
+		<result property="company" column="company"					/>
+		<result property="material" column="material" 				/>	
+		<result property="trade_name" column="trade_name" 			/>
+		<result property="demand_year" column="demand_year" 		/>
+		<result property="demand_month"     column="demand_month"  	/>
+		<result property="demand_qty"   column="demand_qty" 		/>
+		<result property="to_wh_deptid"   column="to_wh_deptid" 	/>
+		<result property="qty" column="qty"  	/>
+	</resultMap>
+	<sql id="selectUseReportVo">
+		SELECT a.to_wh_deptid,a.company,a.material,a.trade_name,a.demand_year,a.demand_month,a.demand_qty,a.qty
+        FROM vw_use_report a
+	</sql>
+	<select id="selectUseReportList" parameterType="SysUseReport" resultMap="SysUseReportResult">
+		<include refid="selectUseReportVo"/>
+		    where 1=1
+	</select>
+
+</mapper> 

@@ -1,0 +1,20 @@
+package com.numberone.system.service;
+
+import java.util.List;
+
+import com.numberone.system.domain.SysSafetyStock;
+
+public interface ISysSafetyStockService {
+	/**
+	 * 分頁查詢安全庫存
+	 * @param sfstock_id
+	 * @return
+	 */
+	public List<SysSafetyStock> selectSafetyStockList(SysSafetyStock sfstock_id);
+	/**
+	 * 新增安全庫存
+	 * @param material
+	 * @return
+	 */
+	public int insertSafetyStock(SysSafetyStock material);
+}

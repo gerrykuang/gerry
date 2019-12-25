@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    
+    <title>化學品管理平台</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="基于SpringBoot2.0的权限管理系统 易读易懂、界面简洁美观。 核心技术采用Spring、MyBatis、Shiro没有任何其它重度依赖">
+    <link href="../static/css/bootstrap.min.css" th:href="@{css/bootstrap.min.css}" rel="stylesheet"/>
+    <link href="../static/css/font-awesome.min.css" th:href="@{css/font-awesome.min.css}" rel="stylesheet"/>
+    <link href="../static/css/style.css" th:href="@{css/style.css}" rel="stylesheet"/>
+    <link href="../static/css/login.min.css" th:href="@{css/login.min.css}" rel="stylesheet"/>
+    <link href="../static/numberone/css/ry-ui.css" th:href="@{/numberone/css/ry-ui.css?v=3.2.0}" rel="stylesheet"/>
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+    <![endif]-->
+    <link rel="shortcut icon" href="../static/favicon.ico" th:href="@{favicon.ico}"/>
+    <style type="text/css">label.error { position:relative;  }</style>
+    <script>
+        if(window.top!==window.self){window.top.location=window.location};
+    </script>
+</head>
+
+<body class="signin">
+	<div class="row" style="min-height: 90px">
+		<div class="col-sm-7">
+		  <img alt="" src="../static/img/logo.png" style="width:90%;height:90%;" th:src="@{/img/logo.png}" />
+		</div>
+		<div class="col-sm-5" style="height:80px;">
+		  <a href="https://www.baidu.com " style="position:absolute;right:8%;bottom: 20px;" target="_blank">使用幫助</a>
+		  <a href="javascript:void(0)" style="position:absolute;right:8%;bottom: 2px;" onclick="addFavoriteNew()">加入收藏</a>
+		</div>
+		<div class="login_marquee">
+		  <marquee id="marquee_id" direction="left" behavior="scroll" scrollamount="5">
+		       通知：本系統已更新，請用戶下載新版教程，對照操作。有問題請聯繫我們 8550-1369
+		   </marquee>
+		</div>		
+	</div>	
+	<hr style="margin:0px; padding: 2px; border-top: 1px solid #1897bd;">
+    <div class="signinpanel row">
+            <div class="col-sm-7" style="min-height:460px;">
+                <div class="signin-info">
+               <!-- <div class="logopanel m-b">
+                        <h1><img alt="[ NumberOne ]" src="../static/numberone.png" style="height:80px;" th:src="@{/numberone.png}"></h1>
+                    </div> -->
+                    <div class="m-b"></div>
+                    <h3>欢迎使用 <strong>化學品管理平台</strong></h3>
+                    <!-- 竖向列表
+                    <ul class="m-b">
+                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> SpringBoot</li>
+                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Mybatis</li>
+                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Shiro</li>
+                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Thymeleaf</li>
+                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Bootstrap</li>
+                    </ul> -->
+                    <ul class="h_ul">
+                        <li><i class="fa fa-arrow-circle-right m-r-xs"></i> SpringBoot</li>
+                        <li><i class="fa fa-arrow-circle-right m-r-xs"></i> Mybatis</li>
+                        <li><i class="fa fa-arrow-circle-right m-r-xs"></i> Shiro</li>
+                        <li><i class="fa fa-arrow-circle-right m-r-xs"></i> Thymeleaf</li>
+                        <li><i class="fa fa-arrow-circle-right m-r-xs"></i> Bootstrap</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-sm-5">
+                <form id="signupForm" style="margin-top: 20px;max-width: 300px;position:absolute;right:20%;color:darkblue">
+                    <h4 class="no-margins">系統登錄：</h4>
+                    <input type="text"     name="username" class="form-control uname"     placeholder="用戶名" />
+                    <input type="password" name="password" class="form-control pword"     placeholder="密碼" />
+					<div class="row m-t" th:if="${captchaEnabled==true}">
+						<div class="col-xs-6">
+						    <input type="text" name="validateCode" class="form-control code" placeholder="驗證碼" maxlength="5" autocomplete="off">
+						</div>
+						<div class="col-xs-6">
+							<a href="javascript:void(0);" title="點擊更換驗證碼">
+								<img th:src="@{captcha/captchaImage(type=${captchaType})}" class="imgcode" width="85%"/>
+							</a>
+						</div>
+					</div>
+                    <div class="checkbox-custom" th:classappend="${captchaEnabled==false} ? 'm-t'">
+				        <input type="checkbox" id="rememberme" name="rememberme"> <label for="rememberme">記住我</label>
+				    </div>
+                    <button class="btn btn-success btn-block" id="btnSubmit" data-loading="正在驗證登錄，請稍後...">登錄</button>
+                    <p style="margin-top: 8px;">還沒有賬號？ <a href="#">立即註冊&raquo;</a></p>
+                </form>
+            </div>
+    </div>
+
+    <hr style="margin: 3 0 0 0; padding: 2px; border-top: 1px solid #1897bd;">
+ 	<div class="signup-footer row">
+ 	  Copyright &copy; 2019 Wistron InfoComm Corporation. All Rights Reserved.
+ 	  <br/>
+ 	 <!--  <a href="/jsref/dom_obj_attributes.asp" target="_blank" rel="nofollow">技術支持：緯創資通(重慶)有限公司 資訊部</a> -->
+ 	    技術支持：緯創資通(重慶)有限公司 資訊部
+ 	</div>
+ 
+<script th:inline="javascript"> var ctx = [[@{/}]]; var captchaType = [[${captchaType}]]; </script>
+<!-- 全局js -->
+<script src="../static/js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+<script src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+<!-- 验证插件 -->
+<script src="../static/ajax/libs/validate/jquery.validate.min.js" th:src="@{/ajax/libs/validate/jquery.validate.min.js}"></script>
+<script src="../static/ajax/libs/validate/messages_zh.min.js" th:src="@{/ajax/libs/validate/messages_zh.min.js}"></script>
+<script src="../static/ajax/libs/layer/layer.min.js" th:src="@{/ajax/libs/layer/layer.min.js}"></script>
+<script src="../static/ajax/libs/blockUI/jquery.blockUI.js" th:src="@{/ajax/libs/blockUI/jquery.blockUI.js}"></script>
+<!-- <script src="http://tajs.qq.com/stats?sId=62048022"></script> -->
+<script src="../static/numberone/js/ry-ui.js" th:src="@{/numberone/js/ry-ui.js?v=3.2.0}"></script>
+<script src="../static/numberone/login.js" th:src="@{/numberone/login.js}"></script>
+<script src="../static/numberone/js/jquery-ui-1.10.3.js" th:src="@{/numberone/js/jquery-ui-1.10.3.js}"></script>
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form-demand-add">
+		
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">公司別：</label>
+				<div class="col-sm-8">
+					<select id="company" class="form-control m-b" th:with="type=${@dict.getType('fcms_company')}">
+	                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+	                </select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">物料：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="material" id="material" oninput="this.value=this.value.toUpperCase()"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">品名：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="trade_name" id="trade_name" readonly="readonly"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">類別：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="category" id="category" readonly="readonly"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">計量單位：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="unit" id="unit" readonly="readonly"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">需求年月：</label>
+				<div class="col-sm-8 input-group date" style="padding: 0px 15px;">
+				   <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+				   <input type="text" id='selectYearMoth' class="form-control" readonly="readonly" value="">
+				</div>
+			</div>
+			
+			<input type="hidden" class="form-control" readonly="readonly" name="demand_year" id="demand_year" />
+			<input type="hidden" class="form-control" readonly="readonly" name="demand_month" id="demand_month" />
+
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">需求數量：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="demand_qty" id="demand_qty"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">保養頻率：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="maintenan_freq" id="maintenan_freq"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">單次使用量：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="singleuse_qty" id="singleuse_qty"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label" >備註：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="remark" id="remark" readonly="readonly"/>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div th:include="include::footer"></div>
+	<script th:src="@{/ajax/libs/select/select2.js}"></script>
+	<script type="text/javascript">
+	var prefix = ctx + "mtdata/demand";		
+	
+	$("#form-demand-add").validate({
+		rules:{
+			material:{
+				required:true,
+				remote: {
+	                url: ctx + "mtdata/demand/checkMaterial",
+	                type: "post",
+	                dataType: "json",
+	                data: {
+	                	"material" : function() {
+	                		return $.common.trim($("#material").val());
+	                    },
+	                    "company" : function() {
+	                		return $.common.trim($("#company").val());
+	                    }
+	                },
+	                dataFilter: function(data, type) {
+	                	return $.validate.unique(data);
+	                }
+	            }
+			},
+		},
+		messages: {
+	        "material": {
+	            remote: "物料不存在"
+	        }
+	    }
+	}); 
+   
+/* 	function submitHandler() {
+        if ($.validate.form()) {
+        	$.operate.save(prefix + "/add", $('#form-demand-add').serialize());
+        }
+    } */
+	
+     function submitHandler() {
+        if ($.validate.form()) {
+        	add();
+        }
+    } 
+		
+     function add() {
+    	var demand_id = $("input[name='demand_id']").val();
+    	var material = $("input[name='material']").val();
+    	var demand_month = $("input[name='demand_month']").val();
+    	var trade_name = $("input[name='trade_name']").val();
+    	var category = $("input[name='category']").val();
+    	var unit = $("input[name='unit']").val();
+    	var demand_year = $("input[name='demand_year']").val();    	
+    	var demand_qty = $("input[name='demand_qty']").val();
+    	var maintenan_freq = $("input[name='maintenan_freq']").val();
+    	var singleuse_qty = $("input[name='singleuse_qty']").val();  	
+    	var company = $("#company option:selected").val();
+    	$.ajax({
+    		cache : true,
+    		type : "POST",
+    		url : ctx + "mtdata/demand/add",
+    		data : {
+    			"demand_id": demand_id,
+    			"company": company,
+    			"material": material,
+    			"trade_name": trade_name,
+    			"unit": unit,
+    			"category": category,
+    			"demand_year": demand_year,
+    			"demand_month": demand_month,
+    			"demand_qty": demand_qty,
+    			"maintenan_freq": maintenan_freq,
+    			"singleuse_qty": singleuse_qty
+    		},
+    		async : false,
+    		error : function(request) {
+    			$.modal.alertError("系統錯誤");
+    		},
+    		success : function(data) {
+    			$.operate.successCallback(data);
+    		}
+    	});
+    }
+     
+     //月份陣列
+     var mothsEn = new Array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'
+                    ,'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
+     
+     //layui的日期選擇外掛程式
+/*      layui.use('laydate', function(){
+    	var laydate = layui.laydate;
+    	//年月選擇器
+    	 laydate.render({
+    	   elem: '#selectYearMoth'
+    	   ,type: 'month'
+    	   ,lang: 'cn'
+    	   ,done: function(value, date){
+    		   $('#demand_year').val(date.year);
+    		  //$('#demand_month').val(date.month);
+    		   $('#demand_month').val(mothsEn[date.month-1]);
+    		   
+    		   console.log( $('#demand_year').val()+" "+ $('#demand_month').val());
+    		}
+    	 });   	
+     });
+      */
+      
+       //layui的日期選擇外掛程式,年月選擇器
+		layui.use('laydate', function() {
+			var laydate = layui.laydate;
+			var initYear;
+			laydate.render({
+				elem : '#selectYearMoth',
+				type : 'month',
+				trigger: 'click',
+				position: 'abolute',
+				lang : 'cn',
+				/* ready和change函数是为了实现选择年月时不用点确定直接关闭  */
+  				ready : function(date) { // 控件在打开时触发，回调返回一个参数：初始的日期时间对象
+					initYear = date.year;
+				},
+				change : function(value, date, endDate) { // 年月日时间被切换时都会触发。回调返回三个参数，分别代表：生成的值、日期时间对象、结束的日期时间对象
+					var selectYear = date.year;
+				 	var differ = selectYear - initYear;
+					if (differ == 0) {
+						if ($(".layui-laydate").length) {
+							$("#selectYearMoth").val(value);
+							$(".layui-laydate").remove();
+						}
+					}
+					/* initYear = selectYear; */
+					$('#demand_year').val(date.year);
+					$('#demand_month').val(mothsEn[date.month-1]);
+				}
+			});
+		});
+
+		//自訂提示
+		/** 聲明material相關參數*/
+		var materialConfig = {
+			el : "#material",
+			data : [],
+			size : 10,
+			showContainer : null,
+			containerStyle : "background:#c4c5d0;",
+			divStyle : "padding:4px;font-size:18px;background:whitesmoke;color:grey",
+			divHoverStyle : "padding:4px;color:blue;background:#cdd8e2;font-size:20px;cursor:pointer;color:#ff5722;",
+			beforeExcuted : false,
+			beforeShow : function(text, callback) {
+				//先清掉所有資料
+				materialConfig.data = [];
+				callback(materialConfig);
+
+				//ajax請求獲取material
+				$.ajax({
+					type : "POST",
+					url : "/mtdata/material/list",
+					dataType : "json",
+					data : {
+						material : text
+					},
+					async : true, //同步請求
+					success : function(result) {
+						//重新設置數據
+						var rows = result.rows;
+						for ( var i in rows) {
+							//第一個span是物料料號，第二個是trade_name
+							materialConfig.data[i] = "<span>"
+									+ rows[i].material + "</span> - <span>"
+									+ rows[i].trade_name + "</span> - <span>"
+									+ rows[i].category + "</span> - <span>"
+									+ rows[i].unit + "</span> [備註:<span>"
+									+ rows[i].remark + "</span>]";
+						}
+						//刷新顯示的資料
+						callback(materialConfig);
+					}
+				});
+			},
+			clickHandler : function(el) {
+				//第一個span是物料料號，第二個span是trade_name
+				var children = el.children;
+				$("#material").val(children[0].innerHTML);
+				$("#trade_name").val(children[1].innerHTML);
+				$("#category").val(children[2].innerHTML);
+				$("#unit").val(children[3].innerHTML);
+				$("#remark").val(children[4].innerHTML)
+				if ($.validate.form()) {
+					return true;
+				}
+				return false;
+			}
+		}
+		/**啟動自動監聽*/
+		simpleSmartTip(materialConfig);
+	</script>
+</body>
+</html>

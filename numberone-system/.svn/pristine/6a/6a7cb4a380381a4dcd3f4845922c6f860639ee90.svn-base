@@ -1,0 +1,20 @@
+package com.numberone.system.service;
+
+import java.util.List;
+
+import com.numberone.system.domain.SysMaintenance;
+/**
+ * 
+ * @author Q18020504
+ *
+ */
+public interface ISysMaintenanceService {
+    /**
+     * 根据条件分页查询系統聯繫人
+     * 
+     * @param Maintenance 系統聯繫人
+     * @return 系統聯繫人集合信息
+     */
+    public List<SysMaintenance> selectMaintenanceList(SysMaintenance employeeid);
+
+}

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form-safetyStock-add">
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">公司別：</label>
+				<div class="col-sm-8">
+					<select name="company" class="form-control m-b" th:with="type=${@dict.getType('fcms_company')}">
+	                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+	                </select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">物料：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="material" id="material" oninput="this.value=this.value.toUpperCase()"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">品名：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="trade_name" id="trade_name" readonly="readonly"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">計量單位：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="unit" value="PCS" id="unit" readonly="readonly"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">安全庫存：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="sfstock_qty" id="sfstock_qty"/>
+				</div>
+			</div>				
+		</form>
+	</div>
+	<div th:include="include::footer"></div>
+	<script th:src="@{/ajax/libs/select/select2.js}"></script>
+	<script type="text/javascript">
+	var prefix = ctx + "mtdata/safetyStock";		
+	
+	$("#form-safetyStock-add").validate({
+		rules:{
+			material:{
+				required:true,
+				remote: {
+	                url: ctx + "mtdata/demand/checkMaterial",
+	                type: "post",
+	                dataType: "json",
+	                data: {
+	                	"material" : function() {
+	                		return $.common.trim($("#material").val());
+	                    },
+	                    "company" : function() {
+	                		return $.common.trim($("#company").val());
+	                    }
+	                },
+	                dataFilter: function(data, type) {
+	                	return $.validate.unique(data);
+	                }
+	            }
+			},
+		},
+		messages: {
+	        "material": {
+	            remote: "物料不存在"
+	        }
+	    }
+	}); 
+   
+      function submitHandler() {
+        if ($.validate.form()) {
+        	$.operate.save(prefix + "/add", $('#form-safetyStock-add').serialize());
+        }
+    } 
+ 
+     function add() {
+    	var sfstock_id = $("input[name='sfstock_id']").val();
+    	var company = $("#company option:selected").val();
+    	var material = $("input[name='material']").val();
+    	var sfstock_qty = $("input[name='sfstock_qty']").val();
+    	var unit = $("input[name='unit']").val();
+    	var trade_name = $("input[name='trade_name']").val();
+
+    	$.ajax({
+    		cache : true,
+    		type : "POST",
+    		url : ctx + "mtdata/safetyStock/add",
+    		data : {
+    			"sfstock_id": sfstock_id,
+    			"company": company,
+    			"material": material,
+    			"sfstock_qty": sfstock_qty,
+    			"unit": unit,
+    			"trade_name": trade_name	
+    		},
+    		async : false,
+    		error : function(request) {
+    			$.modal.alertError("系统错误");
+    		},
+    		success : function(data) {
+    			$.operate.successCallback(data);
+    		}
+    	});
+    } 
+     
+		/** 聲明material相關參數*/
+		var materialConfig = {
+			el: "#material",
+			data: [],
+			size: 10,
+			showContainer: null,
+			containerStyle: "background:#c4c5d0;",
+			divStyle: "padding:4px;font-size:18px;background:whitesmoke;color:grey",
+			divHoverStyle: "padding:4px;color:blue;background:#cdd8e2;font-size:20px;cursor:pointer;color:#ff5722;",
+			beforeExcuted: false,
+			beforeShow: function(text, callback){
+				//先清掉所有数据
+				materialConfig.data = [];
+				callback(materialConfig);
+				
+				//ajax请求获取material
+				$.ajax({
+					type: "POST",
+					url: "/mtdata/material/list",
+					dataType: "json",
+					data: { material: text },
+					async: true, //同步请求
+					success: function(result){
+						//重新设置数据
+						var rows = result.rows;
+						for(var i in rows){
+							//第一个span是物料料号，第二个是trade_name
+							materialConfig.data[i] = "<span>"+rows[i].material+"</span> - <span>"+rows[i].trade_name+"</span> - <span>"+rows[i].unit+ "</span>";
+						}
+						//刷新显示的数据
+						callback(materialConfig);
+					}
+				});
+			},
+			clickHandler: function(el){
+				//第一個span是物料料號，第二個span是trade_name
+				   var children = el.children;
+				   $("#material").val(children[0].innerHTML);
+				   $("#trade_name").val(children[1].innerHTML);
+				   $("#unit").val(children[2].innerHTML)
+					if($.validate.form()){
+						   return true;
+					}
+				   
+					return false;
+			    }
+		}
+		/**啟動自動監聽*/
+		simpleSmartTip(materialConfig);
+		
+	</script>
+</body>
+</html>

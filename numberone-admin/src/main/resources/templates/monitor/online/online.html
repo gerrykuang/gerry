@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+
+    <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="online-form">
+					<div class="select-list">
+						<ul>
+							<li>
+								登錄地址：<input type="text" name="ipaddr"/>
+							</li>
+							<li>
+								操作人員：<input type="text" name="loginName"/>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+	            <a class="btn btn-danger btn-del disabled" onclick="javascript:batchForceLogout()" shiro:hasPermission="monitor:online:batchForceLogout">
+	                <i class="fa fa-sign-out"></i> 強退
+	            </a>
+	        </div>
+	        
+	        <div class="col-sm-12 select-table table-striped">
+			    <table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+	<div th:include="include :: footer"></div>
+	<script th:inline="javascript">
+		var forceFlag = [[${@permission.hasPermi('monitor:online:forceLogout')}]];
+		var prefix = ctx + "monitor/online";
+
+		$(function() {
+		    var options = {
+		        url: prefix + "/list",
+		        exportUrl: prefix + "/export",
+		        sortName: "lastAccessTime",
+		        sortOrder: "desc",
+		        search: false,
+		        escape: true,
+		        columns: [{
+		            checkbox: true
+		        },
+		        {
+                    title: "序號",
+                    formatter: function (value, row, index) {
+                 	    return $.table.serialNumber(index);
+                    }
+                },
+		        {
+		            field: 'sessionId',
+		            title: '會話編號'
+		        },
+		        {
+		            field: 'loginName',
+		            title: '登錄名稱',
+		            sortable: true
+		        },
+		        {
+		            field: 'deptName',
+		            title: '部門名稱'
+		        },
+		        {
+		            field: 'ipaddr',
+		            title: '主機'
+		        },
+		        {
+		            field: 'loginLocation',
+		            title: '登錄地點'
+		        },
+		        {
+		            field: 'browser',
+		            title: '流覽器'
+		        },
+		        {
+		            field: 'os',
+		            title: '作業系統'
+		        },
+		        {
+		            field: 'status',
+		            title: '會話狀態',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		                if (value == 'on_line') {
+		                    return '<span class="badge badge-primary">線上</span>';
+		                } else if (value == 'off_line') {
+		                    return '<span class="badge badge-danger">離線</span>';
+		                }
+		            }
+		        },
+		        {
+		            field: 'startTimestamp',
+		            title: '登錄時間',
+		            sortable: true
+		        },
+		        {
+		            field: 'lastAccessTime',
+		            title: '最後存取時間',
+		            sortable: true
+		        },
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		                var msg = '<a class="btn btn-danger btn-xs ' + forceFlag + '" href="#" onclick="forceLogout(\'' + row.sessionId + '\')"><i class="fa fa-sign-out"></i>強退</a> ';
+		                return msg;
+		            }
+		        }]
+		    };
+		    $.table.init(options);
+		});
+
+		// 單條強退
+		function forceLogout(sessionId) {
+		    $.modal.confirm("確定要強制選中用戶下線嗎？", function() {
+		    	var data = { "sessionId": sessionId };
+		        $.operate.post(prefix + "/forceLogout", data);
+		    })
+		}
+
+		// 批量強退
+		function batchForceLogout() {
+		    var rows = $.table.selectColumns("sessionId");
+		    if (rows.length == 0) {
+		        $.modal.alertWarning("請選擇要強退的用戶");
+		        return;
+		    }
+		    $.modal.confirm("確認要強退選中的" + rows.length + "條數據嗎?", function() {
+		        var url = prefix + "/batchForceLogout";
+		        var data = { "ids": rows };
+		        $.operate.post(url, data);
+		    });
+		}
+	</script>
+</body>
+</html>

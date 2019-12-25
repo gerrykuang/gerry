@@ -1,0 +1,86 @@
+package com.numberone.system.service.impl;
+
+import java.util.Date;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.numberone.common.exception.BusinessException;
+import com.numberone.common.utils.StringUtils;
+import com.numberone.system.domain.SysException;
+import com.numberone.system.mapper.SysExceptionMapper;
+import com.numberone.system.service.ISysExceptionService;
+
+
+@Service
+public class SysExceptionServiceImpl  implements ISysExceptionService{
+	private static final Logger log = LoggerFactory.getLogger(SysConfigServiceImpl.class);
+	
+	@Autowired
+    private SysExceptionMapper exceptionMapper;
+	
+    /**
+     * 分页查询異常
+     */
+    @Override
+    public List<SysException> selectExceptionList(SysException exception)
+    {
+    	return exceptionMapper.selectExceptionList(exception);
+    }
+    /**
+     * 插入異常
+     */
+    @Override
+    public int insertException(SysException exception)
+    {
+    	return exceptionMapper.insertException(exception);
+    }
+	@Override
+	public SysException selectExceptionByID(long execption_id) {
+		return exceptionMapper.selectExceptionByID(execption_id);
+	}
+	
+	@Override
+	public void updateException(SysException exception) {
+		exceptionMapper.updateException(exception);
+	}
+    
+    @Override
+    public String importExcetion(List<SysException> list, String operateName) {
+    	if (StringUtils.isNull(list) || list.size() == 0)
+        {
+            throw new BusinessException("导入用户数据不能为空！");
+        }
+        int successNum = 0;
+        int failureNum = 0;
+        StringBuilder successMsg = new StringBuilder();
+        StringBuilder failureMsg = new StringBuilder();
+        
+        for (SysException exception : list) {
+        	exception.setUpdate_by(operateName);
+        	exception.setUpdate_time(new Date());
+        	
+        	try{
+				insertException(exception);
+				successNum++;
+	            successMsg.append("<br/>[" + exception.getCompany()+","+exception.getTrade_name()+ ","+ exception.getQty()+ "] 导入成功");
+        	}catch(Exception e){
+        		failureNum++;
+        		String message = "[" + exception.getCompany()+","+exception.getTrade_name()+ ","+ exception.getQty()+ "] 插入失敗";
+        		failureMsg.append("<br/>"+message);
+        		log.error(message, e);
+        	}
+		}
+        
+        if(failureNum>0){
+        	failureMsg.insert(0, "抱歉，导入失败！共 " + failureNum + " 条数据格式不正确，错误如下：");
+            throw new BusinessException(failureMsg.toString());
+        }else{
+        	 successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
+        }
+    	return successMsg.toString();
+    }
+}

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberone.system.mapper.SysDemandMapper">
+
+	<resultMap type="SysDemand" id="SysDemandResult">
+		<id     property="demand_id"   column="demand_id" 			/>
+		<result property="company" column="company"					/>
+		<result property="material" column="material" 				/>	
+		<result property="trade_name" column="trade_name" 			/>
+		<result property="category"     column="category"   		/>
+		<result property="unit"     column="unit"					/>
+		<result property="demand_year" column="demand_year" 		/>
+		<result property="demand_month"     column="demand_month"  	/>
+		<result property="demand_qty"   column="demand_qty" 		/>
+		<result property="maintenan_freq" column="maintenan_freq"  	/>
+		<result property="singleuse_qty"     column="singleuse_qty"	/>
+		<result property="remark"     column="remark"   			/>
+		<result property="createBy"     column="create_by"			/>
+		<result property="createTime" column="create_time" 			/>
+		<result property="updateBy"     column="update_by"   		/>
+		<result property="updateTime"   column="update_time" 		/>
+	</resultMap>
+	<sql id="selectDemandVo">
+		SELECT a.demand_id,a.company,a.singleuse_qty,a.remark,a.material,a.trade_name,a.category, a.unit,a.demand_year,a.demand_month,a.demand_qty,a.maintenan_freq, a.create_time,a.create_by
+        FROM fcms_demand a
+	</sql>
+	<select id="selectDemandList" parameterType="SysDemand" resultMap="SysDemandResult">
+		<include refid="selectDemandVo"/>
+		where 1=1
+		<if test="demand_id != null and demand_id != ''">
+			and a.demand_id like ('%'||#{demand_id}||'%')
+		</if>
+	</select>
+    <select id="selectDemandId"  parameterType="String" resultMap="SysDemandResult">
+		<include refid="selectDemandVo"/>
+			where  a.demand_id = #{demand_id}
+	</select>
+	<select id="checkMaterial" parameterType="String" resultType="int">
+		select count(1) from fcms_material where material=#{material} 
+	</select>
+</mapper> 

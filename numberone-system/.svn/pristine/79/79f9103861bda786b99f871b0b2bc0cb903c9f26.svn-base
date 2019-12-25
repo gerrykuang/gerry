@@ -1,0 +1,68 @@
+package com.numberone.system.domain;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+import com.numberone.common.annotation.Excel;
+import com.numberone.common.base.BaseEntity;
+
+public class SysMaterial  extends BaseEntity{
+	private static final long serialVersionUID = 1L;
+	 @Excel(name = "物料編號")
+	    private String material;
+	 @Excel(name = "中文品名")
+	 	private String description;
+	 @Excel(name = "類別", readConverterExp = "0=xx,1=test")
+	 	private String clas_flag;
+
+
+	
+	public String getMaterial() {
+		return material;
+	}
+
+
+
+	public void setMaterial(String material) {
+		this.material = material;
+	}
+
+
+
+	public String getDescription() {
+		return description;
+	}
+
+
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+
+
+	public String getClas_flag() {
+		return clas_flag;
+	}
+
+
+
+	public void setClas_flag(String clas_flag) {
+		this.clas_flag = clas_flag;
+	}
+
+
+
+	@Override
+    public String toString() {
+        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
+            .append("materialId", getMaterial())
+            .append("materialTitle", getDescription())
+            .append("materialClas", getClas_flag())
+            .append("createBy", getCreateBy())
+            .append("createTime", getCreateTime())
+            .append("updateBy", getUpdateBy())
+            .append("updateTime", getUpdateTime())
+            .toString();
+    }
+}

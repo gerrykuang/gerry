@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberone.system.mapper.SysMsdsMapper">
+
+	<resultMap type="SysMsds" id="SysMsdsResult">
+		<id     property="msdsid"   	column="msds_id" 	/>
+		<result property="material" 	column="material"   />
+		<result property="description"  column="description"/>
+		<result property="upload_date"  column="upload_date"/>
+		<result property="next_date"    column="next_date"	/>
+		<result property="msds" 		column="msds" 		/>
+		<result property="createBy"     column="create_by"  />		
+		<result property="createTime"   column="create_time"/>
+		<result property="updateBy"     column="update_by"  />
+		<result property="updateTime"   column="update_time"/>
+	</resultMap>
+	<sql id="selectMsdsVo">
+		SELECT a.msds_id,a.material,a.description,a.upload_date,a.next_date,a.msds,a.create_time,a.create_by 
+        FROM fcms_msds a
+	</sql>
+	<select id="selectMsdsList" parameterType="SysMsds" resultMap="SysMsdsResult">
+		<include refid="selectMsdsVo"/>
+		where 1=1
+		<if test="msdsid != null and msdsid != ''">
+			and a.msds_id like ('%'||#{msdsid}||'%')
+		</if>
+		<if test="material != null and material != ''">
+			and a.material like ('%'||#{material}||'%')
+		</if>
+	</select>
+	<select id="selectMsdsById" parameterType="Long" resultType="String">
+		select a.msds from fcms_msds a
+		where 1=1
+			and a.msds_id = #{msdsid}
+	</select>
+	<select id="selectMsdsBymsds" parameterType="String" resultMap="SysMsdsResult">
+		<include refid="selectMsdsVo"/>
+		where 1=1
+			and a.msds = #{msds}
+	</select>
+	<update id="updateMsds" parameterType="SysMsds">
+		update fcms_msds
+		<set> 			
+   			msds = #{msds}, 
+ 			update_time = sysdate
+ 		</set>
+  		where msds_id = #{msdsid} 
+	</update>
+</mapper> 

@@ -1,0 +1,115 @@
+package com.numberone.system.service.impl;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.numberone.common.constant.FcmsConstants;
+import com.numberone.common.constant.UserConstants;
+import com.numberone.common.support.Convert;
+import com.numberone.common.utils.StringUtils;
+import com.numberone.system.domain.SysDictType;
+import com.numberone.system.domain.SysMaterial;
+import com.numberone.system.domain.SysRole;
+import com.numberone.system.mapper.SysMaterialMapper;
+import com.numberone.system.mapper.SysRoleMapper;
+import com.numberone.system.service.ISysMaterialService;
+/**
+ *物料業務層
+ *
+ *@author gerry
+ */
+
+
+@Service
+public class SysMaterialServiceImpl implements ISysMaterialService{
+	 
+    @Autowired
+    private SysMaterialMapper materialMapper;
+    
+	/**
+	 * 查询所有的物料
+	 *  
+	 */
+    @Override
+	public List<SysMaterial> selectMaterial()
+	{
+    	return materialMapper.selectMaterial();
+	}
+    
+    /**
+     * 分页查询物料
+     */
+    @Override
+    public List<SysMaterial> selectMaterialList(SysMaterial material)
+    {
+    	return materialMapper.selectMaterialList(material);
+    }
+    
+	/**
+	 * 根据料号查询物料
+	 *  
+	 */
+    @Override
+	public SysMaterial selectMaterialId(String material)
+	{
+    	return materialMapper.selectMaterialId(material);
+	}
+    
+    @Override
+    public int insertMaterial(SysMaterial material)
+    {	
+    	return materialMapper.insertMaterial(material);
+    }
+    /**
+     * 检查料号是否唯一
+     * @ material 物料id
+     * @return 结果
+     */
+    @Override
+    public String checkMaterialUnique(String material)
+    {
+    	int count=materialMapper.checkMaterialUnique(material);
+        if (count > 0)
+        {
+            return FcmsConstants.MATERIAL_NOT_UNIQUE;
+        }
+        return FcmsConstants.MATERIAL_UNIQUE;
+    }
+    
+    /**
+     * 删除物料
+     * @param material
+     * @return
+     */
+    @Override
+    public int SysMaterialDelete(String material)
+    {
+    	return materialMapper.deleteMaterial(material);
+    }
+    /**
+     * 批量删除物料信息
+     * 
+     * @param material
+     * @return 结果
+     * @throws Exception 异常
+     */
+    @Override
+    public int SysMaterialDeletes(String ids)
+    {	
+    	String[] materials=Convert.toStrArray(ids);
+    	//String[] materials=Convert.toStrArray(material);
+    	return materialMapper.deleteMaterials(materials);
+    }
+    
+    @Override
+    public int updateMaterial(SysMaterial material)
+    {
+    	return materialMapper.updateMaterial(material);
+    }
+    
+}

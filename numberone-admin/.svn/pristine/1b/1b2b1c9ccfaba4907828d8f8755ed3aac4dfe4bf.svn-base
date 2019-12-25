@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+<body class="gray-bg">
+	
+	<div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse " >
+				<form id="role-form">
+					<div class="select-list">
+						<ul>
+							<li>
+								公司別：<select name="company" th:with="type=${@dict.getType('fcms_company')}">
+	                    			<option value="">所有</option>
+	                    			<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+	                				</select>
+							</li>
+							<li>
+								物料：<input type="text" name="material" oninput="this.value=this.value.toUpperCase()"/>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							    <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			<!-- 增刪改料號 -->
+			<div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+	        	<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="mtdata:demand:add">
+	                <i class="fa fa-plus"></i> 新增
+	            </a>
+	            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="mtdata:demand:export">
+		            <i class="fa fa-download"></i> 導出
+		        </a>
+	        </div>
+	        
+			<div class="col-sm-12 select-table table-striped">
+			    <table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+	<div th:include="include :: footer"></div>
+	<script th:inline="javascript">
+	var editFlag = [[${@permission.hasPermi('mtdata:demand:edit')}]];
+	var removeFlag = [[${@permission.hasPermi('mtdata:demand:remove')}]];
+	var datas = [[${@dict.getType('delete_flag')}]];
+	var prefix = ctx + "mtdata/demand";
+	
+
+	$(function() {
+	    var options = {
+	        url: prefix + "/list",
+	        createUrl: prefix + "/add",
+	        updateUrl: prefix + "/edit/{id}",
+	        removeUrl: prefix + "/remove",
+	        exportUrl: prefix + "/export",
+	        sortName: "createTime",
+	        sortOrder: "desc",
+	        modalName: "每月需求量",
+	        search: false,
+	        showExport: false,
+	        columns: [{
+	            checkbox: true
+	        },
+	        {
+	            field: 'demand_id',//必須寫在第一個，不然edit找不到
+	            title: '需求ID',
+	            align: 'left',
+	            visible: false
+	        },
+	        {
+	            field: 'company',//必須寫在第一個，不然edit找不到
+	            title: '公司別',
+	            sortable: true,
+	            align: 'left'
+	        },
+	        {
+	            field: 'material',//必須寫在第一個，不然edit找不到
+	            title: '物料',
+	            align: 'left'
+	        },
+	        {
+	            field: 'trade_name',//必須寫在第一個，不然edit找不到
+	            title: '品名',
+	            align: 'left'
+	        },
+	        {
+	            field: 'category',
+	            title: '類別',
+	            align: 'left'
+	        },
+	        {
+	            field: 'unit',
+	            title: '計量單位',
+	            align: 'left'
+	        },
+	        {
+	            field: 'demand_year',
+	            title: '需求年',
+	            align: 'left'
+	        },
+	        {
+	            field: 'demand_month',
+	            title: '需求月',
+	            align: 'left'
+	        },
+	        {
+	            field: 'demand_qty',
+	            title: '需求數量',
+	            align: 'left'
+	        },
+	        {
+	            field: 'maintenan_freq',
+	            title: '保養頻率',
+	            align: 'left'
+	        },
+	        {
+	            field: 'singleuse_qty',
+	            title: '單次使用量',
+	            align: 'left'
+	        },
+	        {
+	            field: 'remark',
+	            title: '備註',
+	            align: 'left',
+	            visible:false
+	        },
+	        
+	        {
+	            field: 'createTime',
+	            title: '創建時間',
+	            sortable: true,
+	            align: 'center'
+	        },
+	        {
+	            field: 'createBy',
+	            title: '創建人',
+	            align: 'center'
+	        }]
+	    };
+	    $.table.init(options);
+	});
+	
+	
+	</script>
+</body>
+</html>

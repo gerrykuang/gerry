@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberone.system.mapper.SysMsdsMapper">
+
+	<resultMap type="SysMsds" id="SysMsdsResult">
+		<id     property="msdsid"   	column="msdsid" 	/>
+		<result property="material" 	column="material"   />
+		<result property="trade_name"  column="trade_name"/>
+		<result property="upload_time"  column="upload_time"/>
+		<result property="next_date"    column="next_date"	/>
+		<result property="msds" 		column="msds" 		/>
+		<result property="createBy"     column="create_by"  />		
+		<result property="createTime"   column="create_time"/>
+		<result property="updateBy"     column="update_by"  />
+		<result property="updateTime"   column="update_time"/>
+	</resultMap>
+	<sql id="selectMsdsVo">
+		SELECT a.msdsid,a.material,a.trade_name,a.upload_time ,a.next_date,a.msds,a.create_time,a.create_by 
+        FROM fcms_msds a
+	</sql>
+	<select id="selectMsdsList" parameterType="SysMsds" resultMap="SysMsdsResult">
+		<include refid="selectMsdsVo"/>
+		where 1=1
+		<if test="msdsid != null and msdsid != ''">
+			and a.msdsid like ('%'||#{msdsid}||'%')
+		</if>
+		<if test="material != null and material != ''">
+			and a.material like ('%'||#{material}||'%')
+		</if>
+		<if test="trade_name != null and trade_name != ''">
+			and a.trade_name like ('%'||#{trade_name}||'%')
+		</if>
+	</select>
+	<select id="selectMsdsById" parameterType="Long" resultType="String">
+		select a.msds from fcms_msds a
+		where 1=1
+			and a.msdsid = #{msdsid}
+	</select>
+	<select id="selectMsdsBymsds" parameterType="String" resultMap="SysMsdsResult">
+		<include refid="selectMsdsVo"/>
+		where 1=1
+			and a.msds = #{msds}
+	</select>
+	<update id="updateMsds" >
+		update fcms_msds
+		<set> 			
+   			msds = #{msds}, 
+ 			update_time = sysdate,
+ 			upload_time = sysdate,
+ 			update_by= #{updateBy},
+ 			next_date='1095'
+ 		</set>
+  		where msdsid = #{msdsid} 
+	</update>
+	
+	<insert id="insertMsds" parameterType="SysMsds" useGeneratedKeys="true" keyProperty="msdsid">
+         	<selectKey keyProperty="msdsid" resultType="long" order="BEFORE">
+           SELECT SEQ_FMCS_MSDS.NEXTVAL FROM DUAL  
+     	    </selectKey>
+        insert into fcms_msds (
+        	<if test="msdsid != null and msdsid != 0">msdsid,</if>
+			<if test="material != null and material != '' ">material, </if>
+			<if test="trade_name != null and trade_name != '' ">trade_name, </if>
+			<if test="next_date != null and next_date != '' ">next_date, </if>
+ 			<if test="createBy != null and createBy != ''">create_by,</if>
+ 			upload_time,
+ 			create_time
+ 		)values(
+ 			<if test="msdsid != null and msdsid != ''">#{msdsid},</if>
+			<if test="material != null and material != ''">#{material}, </if>
+			<if test="trade_name != null and trade_name != ''">#{trade_name}, </if>
+			<if test="next_date != null and next_date != ''">#{next_date}, </if>
+			<if test="createBy != null and createBy != ''">#{createBy}, </if>
+			sysdate,
+ 			sysdate
+		)
+    </insert>
+	
+</mapper> 

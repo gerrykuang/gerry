@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	
+	<div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="role-form">
+					<div class="select-list">
+						<ul>
+							<li>
+								料號：<input type="text" name="material"/>
+							</li>
+							<li>
+								品名：<input type="text" name="trade_name"/>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							    <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+			<div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+	        	<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="mtdata:exception:add">
+	                <i class="fa fa-plus"></i> 新增
+	            </a>
+	             <a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="mtdata:material:edit">
+		            <i class="fa fa-edit"></i> 修改
+		        </a>
+	            <a class="btn btn-danger btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="mtdata:material:remove">
+	                <i class="fa fa-remove"></i> 删除
+	            </a>
+	            <a class="btn btn-info" onclick="$.table.importExcel()" shiro:hasPermission="mtdata:material:import">
+		            <i class="fa fa-upload"></i> 导入
+		        </a>
+	            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="mtdata:material:export">
+		            <i class="fa fa-download"></i> 导出
+		        </a>
+<!-- 		        按钮触发模态框 -->
+<!-- 				<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal"> -->
+<!--    					 添加 -->
+<!-- 				</button> -->
+<!-- 				<button class="btn btn-primary btn-lg" onclick="update_info(8)" data-toggle="modal" data-target="#myModal"> -->
+<!--   				 	 编辑 -->
+<!-- 				</button> -->
+	        </div>
+	        
+			<div class="col-sm-12 select-table table-striped">
+			    <table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+
+	<!-- 模态框（Modal） -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                   MSDS資料上傳
+                </h4>
+            </div>           
+		<form id="form_data" enctype="multipart/form-data" class="mt20 mb10" >
+			<div class="modal-body">
+				<input type="file" id="file" name="file"/>
+				<font color="red" class="pull-left mt10">
+				提示：請上傳PDF檔格式文件！
+				</font>
+			</div>
+	  		<div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" id="uploadFileBt" class="btn btn-primary">
+                  	  上傳
+                </button>
+            </div>
+		</form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+	<div th:include="include :: footer"></div>
+	<script th:inline="javascript">
+	var editFlag = [[${@permission.hasPermi('mtdata:msds:edit')}]];
+	var uploadFlag = [[${@permission.hasPermi('mtdata:msds:upload')}]];
+	var downloadFlag = [[${@permission.hasPermi('mtdata:msds:download')}]];
+	var removeFlag = [[${@permission.hasPermi('mtdata:msds:remove')}]];
+	var datas = [[${@dict.getType('delete_flag')}]];
+	var prefix = ctx + "mtdata/msds";
+	
+	
+
+	$(function() {
+	    var options = {
+	        url: prefix + "/list",
+	        createUrl: prefix + "/add",
+	        updateUrl: prefix + "/edit/{id}",
+	        removeUrl: prefix + "/remove",
+	        exportUrl: prefix + "/export",
+	        uploadUrl: prefix + "/upload/{id}",
+	        downloadUrl: prefix + "/downloadFile/{msdsid}",
+	        sortName: "MSDS",
+	        modalName: "MSDS",
+	        search: false,
+	        showExport: false,
+	        columns: [{
+	            checkbox: true
+	        },
+	        {
+	            field: 'msdsid',//必須寫在第一個，不然edit找不到
+	            title: 'msdsid',
+	            align: 'left'
+	        },
+	        {
+	            field: 'material',//必須寫在第一個，不然edit找不到
+	            title: '料號',
+	            align: 'left'
+	        },
+	        {
+	            field: 'trade_name',
+	            title: '品名',
+	            align: 'left'
+	        },
+	        {
+	            field: 'upload_time',
+	            title: '上傳時間',
+	            align: 'left'
+	        },
+	        {
+	            field: 'next_date',
+	            title: '距離下次更新時間',
+	            align: 'left'
+	        },
+	        {
+	            field: 'msds',
+	            title: 'MSDS',
+ 	            align: 'center',
+	            formatter: function(value, row, index) {
+	                var actions = [];
+	                //actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.msdsid + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+	                actions.push('<a class="btn btn-primary btn-xs ' + uploadFlag + '" data-toggle="modal" href="#myModal"><i class="fa fa-upload"></i>上傳 </a>');
+	                $("#uploadFileBt").click(function(){
+	                	submitHandler(row.msdsid);
+	                });
+	                
+	                actions.push('<a class="btn btn-danger btn-xs ' + downloadFlag + '" href="#" onclick="exportFile(\'' + row.msdsid + '\')" ><i class="fa fa-download"></i>下載</a>');
+	                return actions.join('');
+	            }
+	        },
+	        {
+	            field: 'createTime',
+	            title: '创建时间',
+	            sortable: true,
+	            align: 'center'
+	        },
+	        {
+	            field: 'createBy',
+	            title: '创建人',
+	            align: 'center'
+	        },
+	        {
+	            title: '操作',
+	            align: 'center',
+	            formatter: function(value, row, index) {
+	                var actions = [];
+	                actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.msdsid + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+	                actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '"  href="#" onclick="$.operate.remove(\'' + row.msdsid + '\')"><i class="fa fa-remove"></i>删除</a> ');
+				    return actions.join('');
+	            }
+	        }]
+	    };
+	    $.table.init(options);
+	});
+	
+	function submitHandler(msdsid) {
+// 		$('#identifier').model(option);
+// 		var form_data = $("#importForm").serialize();
+//         alert(form_data);
+	    if ($.validate.form()) {
+	        uploadFile(msdsid);
+	    }
+	}
+
+	function exportFile(msdsid){        
+		        var form=$("<form>");
+		        form.attr("style","display:none");
+		        form.attr("target","");
+		        form.attr("method","post");//提交方式为post
+		        form.attr("action",prefix +"/downloadFile/{msdsid}");//定义action
+		var input1 = $('<input>');
+        input1.attr('type','hidden');
+        input1.attr('name','id');
+        input1.attr('value',msdsid);
+		        $("body").append(form);
+				form.append(input1);
+		        form.submit();        
+		   }
+	
+	function uploadFile(msdsid) {
+	    var formData = new FormData();
+	    if($('#file')[0].files[0] == null) {
+	        $.modal.alertWarning("请先选择文件路径");
+	        return false;  
+	    }
+	    
+	    if(msdsid!=null)
+	    formData.append('msdsid', msdsid);
+	    formData.append('fileName', $("#fileName").val());
+	    formData.append('file', $('#file')[0].files[0]);
+	    $.ajax({
+	        url: prefix + "/upload",
+	        type: 'post',
+	        cache: false,
+	        data: formData,
+	        processData: false,
+	        contentType: false,
+	        dataType: "json",
+	        success: function(result) {
+	            $.operate.ajaxSuccess(result);//操作成功，不更新界面
+	        }
+	    });
+	}
+
+
+</script> 
+</body>
+
+</html>

@@ -1,0 +1,48 @@
+package com.numberone.system.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.numberone.system.domain.SysException;
+import com.numberone.system.domain.SysMaterial;
+import com.numberone.system.mapper.SysExceptionMapper;
+import com.numberone.system.mapper.SysMaterialMapper;
+import com.numberone.system.service.ISysExceptionService;
+import com.numberone.system.service.ISysMaterialService;
+
+@Service
+public class SysExceptionServiceImpl  implements ISysExceptionService{
+	
+	@Autowired
+    private SysExceptionMapper exceptionMapper;
+	
+    /**
+     * 分页查询異常
+     */
+    @Override
+    public List<SysException> selectExceptionList(SysException exception)
+    {
+    	return exceptionMapper.selectExceptionList(exception);
+    }
+    /**
+     * 插入異常
+     */
+    @Override
+    public int insertException(SysException exception)
+    {
+    	return exceptionMapper.insertException(exception);
+    }
+	@Override
+	public SysException selectExceptionByID(long execption_id) {
+		return exceptionMapper.selectExceptionByID(execption_id);
+	}
+	
+	@Override
+	public void updateException(SysException exception) {
+		exceptionMapper.updateException(exception);
+	}
+    
+    
+}

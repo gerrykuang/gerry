@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberone.system.mapper.SysUsageReportMapper">
+
+	<resultMap type="SysUsageReport" id="SysUsageReportResult">
+		
+		<result property="company" column="company"					/>
+		<result property="material" column="material" 				/>	
+		<result property="trade_name" column="trade_name" 			/>
+		<result property="demand_year" column="demand_year" 		/>
+		<result property="jan"     column="jan"  	/>
+		<result property="feb"     column="feb"  	/>
+		<result property="mar"     column="mar"  	/>
+		<result property="apr"     column="apr"  	/>
+		<result property="may"   	column="may" 	/>
+		<result property="jun"     column="jun"  	/>
+		<result property="jul"   	column="jul" 	/>
+		<result property="aug"     column="aug"  	/>
+		<result property="sep"   	column="sep" 	/>
+		<result property="dec"     column="dec"  	/>
+		<result property="nov"   	column="nov" 	/>
+		<result property="oct"     column="oct"  	/>
+		<result property="avg_last_year"   column="avg_last_year" 	/>
+		<result property="avg_this_year"   column="avg_this_year" 	/>
+	</resultMap>
+	<sql id="selectUsageReportVo">
+		SELECT a.company,a.material,a.trade_name,a.demand_year,a.jan,a.feb,a.mar,a.apr,a.may,
+		a.jun,a.jul,a.aug,a.sep,a.dec,a.nov,a.oct,a.avg_last_year,a.avg_this_year
+        FROM vw_usage_report a
+	</sql>
+	<select id="selectUsageReportList" parameterType="SysUsageReport" resultMap="SysUsageReportResult">
+		<include refid="selectUsageReportVo"/>
+		    where 1=1
+		<if test="company != null and company != ''">
+			and a.company like ('%'||#{company}||'%')
+		</if>
+	</select>
+
+</mapper> 

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	
+	<div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="role-form">
+					<div class="select-list">
+						<ul>
+							<li>
+								公司別：<input type="text" name="company"/>
+							</li>
+							<li>
+								物料：<input type="text" name="income_year"/>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							    <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			<!-- 增刪改料號 -->
+			<div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+	        	<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="mtdata:capacity:add">
+	                <i class="fa fa-plus"></i> 新增
+	            </a>
+	           
+	            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="mtdata:capacity:export">
+		            <i class="fa fa-download"></i> 导出
+		        </a>
+	        </div>
+	        
+			<div class="col-sm-12 select-table table-striped">
+			    <table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+	<div th:include="include :: footer"></div>
+	<script th:inline="javascript">
+	var prefix = ctx + "mtdata/capacity";
+	
+
+	$(function() {
+	    var options = {
+	        url: prefix + "/list",
+	        createUrl: prefix + "/add",
+	        exportUrl: prefix + "/export",
+	        sortName: "company",
+	        modalName: "產能數據",
+	        search: false,
+	        showExport: false,
+	        columns: [{
+	            checkbox: true
+	        },
+	        {
+	            field: 'company',//必須寫在第一個，不然edit找不到
+	            title: '公司別',
+	            align: 'left'
+	        },
+	        {
+	            field: 'income_year',//必須寫在第一個，不然edit找不到
+	            title: '年份',
+	            align: 'left'
+	        },
+	        {
+	            field: 'income_month',//必須寫在第一個，不然edit找不到
+	            title: '月份',
+	            align: 'left'
+	        },
+	        {
+	            field: 'income_qty',//必須寫在第一個，不然edit找不到
+	            title: '產量',
+	            align: 'left'
+	        },
+	        {
+	            field: 'remark',
+	            title: '備註',
+	            align: 'left'
+	        },
+	        {
+	            field: 'createTime',
+	            title: '創建時間',
+	            sortable: true,
+	            align: 'center'
+	        },
+	        {
+	            field: 'createBy',
+	            title: '創建人',
+	            align: 'center'
+	        }
+	      ]
+	    };
+	    $.table.init(options);
+	});
+	
+	
+	</script>
+</body>
+</html>
